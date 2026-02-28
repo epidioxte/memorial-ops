@@ -1,0 +1,2284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memorial Operations Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ==================== CSS VARIABLES ==================== */
+:root {
+  --navy-900: #1B2F45;
+  --navy-800: #213751;
+  --navy-700: #2B4C6F;
+  --navy-600: #36608A;
+  --navy-500: #4A7BAA;
+  --navy-400: #6B9BC7;
+  --navy-300: #9BBDDB;
+  --navy-200: #C5D9EA;
+  --navy-100: #E4EEF5;
+  --navy-50: #F2F7FB;
+
+  --stone-900: #3D3731;
+  --stone-700: #6B6358;
+  --stone-500: #9C9284;
+  --stone-400: #B5AB9E;
+  --stone-300: #CFC8BD;
+  --stone-200: #E5E0DA;
+  --stone-100: #F2EFEB;
+  --stone-50: #F9F8F6;
+
+  --white: #FFFFFF;
+  --black: #0F1419;
+
+  --success-bg: #ECFDF3;
+  --success-text: #027A48;
+  --success-border: #A6F4C5;
+
+  --warning-bg: #FFFAEB;
+  --warning-text: #B54708;
+  --warning-border: #FEDF89;
+
+  --danger-bg: #FEF3F2;
+  --danger-text: #B42318;
+  --danger-border: #FECDCA;
+
+  --info-bg: #EFF8FF;
+  --info-text: #175CD3;
+  --info-border: #B2DDFF;
+
+  --purple-bg: #F4F3FF;
+  --purple-text: #5925DC;
+
+  --sidebar-width: 260px;
+  --header-height: 64px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --shadow-sm: 0 1px 2px rgba(27,47,69,0.05);
+  --shadow-md: 0 4px 12px rgba(27,47,69,0.08);
+  --shadow-lg: 0 8px 30px rgba(27,47,69,0.12);
+  --shadow-xl: 0 20px 60px rgba(27,47,69,0.15);
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==================== RESET ==================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { font-family: 'DM Sans', sans-serif; background: var(--stone-50); color: var(--black); overflow: hidden; height: 100vh; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, select, textarea { font-family: inherit; font-size: inherit; }
+a { text-decoration: none; color: inherit; }
+
+/* ==================== TYPOGRAPHY ==================== */
+.font-serif { font-family: 'Cormorant Garamond', serif; }
+.font-sans { font-family: 'DM Sans', sans-serif; }
+h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: var(--navy-900); }
+
+/* ==================== LOGIN SCREEN ==================== */
+#login-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--navy-900);
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+#login-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.login-container {
+  width: 100%; max-width: 440px; padding: 20px;
+  animation: fadeUp 0.6s ease-out;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-logo {
+  text-align: center; margin-bottom: 48px;
+}
+.login-logo .logo-circle {
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 2px solid var(--navy-400);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.login-logo .logo-circle span {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px; font-weight: 700; color: var(--navy-300);
+}
+.login-logo h1 {
+  font-size: 24px; color: var(--white); letter-spacing: 3px; text-transform: uppercase; font-weight: 500;
+}
+.login-logo p {
+  color: var(--navy-400); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px;
+}
+
+.login-card {
+  background: var(--white); border-radius: var(--radius-xl); padding: 40px;
+  box-shadow: var(--shadow-xl);
+}
+.login-card h2 {
+  font-size: 22px; margin-bottom: 4px;
+}
+.login-card .subtitle {
+  color: var(--stone-500); font-size: 13px; margin-bottom: 28px;
+}
+
+.form-group { margin-bottom: 18px; }
+.form-group label {
+  display: block; font-size: 12px; font-weight: 600; color: var(--navy-700);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+}
+.form-group input, .form-group select {
+  width: 100%; padding: 11px 14px; border: 1.5px solid var(--stone-200);
+  border-radius: var(--radius-md); font-size: 14px; color: var(--black);
+  transition: var(--transition); background: var(--white);
+  outline: none;
+}
+.form-group input:focus, .form-group select:focus {
+  border-color: var(--navy-500); box-shadow: 0 0 0 3px rgba(43,76,111,0.1);
+}
+.form-group input::placeholder { color: var(--stone-400); }
+
+.btn-primary {
+  width: 100%; padding: 12px; background: var(--navy-700); color: var(--white);
+  border-radius: var(--radius-md); font-weight: 600; font-size: 14px;
+  transition: var(--transition); margin-top: 8px;
+  letter-spacing: 0.3px;
+}
+.btn-primary:hover { background: var(--navy-800); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+.role-selector {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
+}
+.role-btn {
+  padding: 14px 12px; border: 1.5px solid var(--stone-200); border-radius: var(--radius-md);
+  text-align: center; transition: var(--transition); cursor: pointer;
+}
+.role-btn:hover { border-color: var(--navy-300); background: var(--navy-50); }
+.role-btn.active { border-color: var(--navy-600); background: var(--navy-50); }
+.role-btn .role-icon { font-size: 20px; margin-bottom: 4px; }
+.role-btn .role-name { font-size: 12px; font-weight: 600; color: var(--navy-800); }
+.role-btn .role-desc { font-size: 10px; color: var(--stone-500); margin-top: 2px; }
+
+/* ==================== APP LAYOUT ==================== */
+#app {
+  display: none; height: 100vh; overflow: hidden;
+}
+#app.active { display: flex; }
+
+/* ==================== SIDEBAR ==================== */
+.sidebar {
+  width: var(--sidebar-width); background: var(--navy-900); color: var(--white);
+  display: flex; flex-direction: column; flex-shrink: 0;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.sidebar-header {
+  padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.sidebar-logo {
+  display: flex; align-items: center; gap: 12px;
+}
+.sidebar-logo .s-circle {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1.5px solid var(--navy-500);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sidebar-logo .s-circle span {
+  font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; color: var(--navy-300);
+}
+.sidebar-logo .s-text h3 {
+  font-size: 13px; color: var(--white); font-family: 'DM Sans', sans-serif;
+  font-weight: 600; letter-spacing: 1px; text-transform: uppercase; line-height: 1.2;
+}
+.sidebar-logo .s-text p {
+  font-size: 10px; color: var(--navy-400); letter-spacing: 0.5px; margin-top: 1px;
+}
+
+.sidebar-role {
+  margin: 14px 16px; padding: 10px 12px; background: rgba(255,255,255,0.06);
+  border-radius: var(--radius-md); display: flex; align-items: center; gap: 10px;
+}
+.sidebar-role .role-avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--navy-600);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--white);
+}
+.sidebar-role .role-info .role-title { font-size: 12px; font-weight: 600; color: var(--white); }
+.sidebar-role .role-info .role-loc { font-size: 10px; color: var(--navy-400); }
+
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 8px 0; }
+.sidebar-nav::-webkit-scrollbar { width: 0; }
+
+.nav-section { padding: 16px 16px 6px; }
+.nav-section-title {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--navy-500); margin-bottom: 6px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; margin: 1px 8px; border-radius: var(--radius-md);
+  cursor: pointer; transition: var(--transition); color: var(--navy-300);
+  font-size: 13px; font-weight: 400; position: relative;
+}
+.nav-item:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+.nav-item.active { background: rgba(255,255,255,0.1); color: var(--white); font-weight: 500; }
+.nav-item .nav-icon { width: 18px; text-align: center; font-size: 14px; flex-shrink: 0; }
+.nav-item .nav-badge {
+  margin-left: auto; background: var(--navy-600); color: var(--navy-200);
+  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+}
+.nav-item .nav-badge.urgent { background: #C4474B; color: var(--white); }
+
+.sidebar-footer {
+  padding: 16px; border-top: 1px solid rgba(255,255,255,0.06);
+}
+.sidebar-footer button {
+  width: 100%; padding: 9px; border-radius: var(--radius-md);
+  color: var(--navy-400); font-size: 12px; font-weight: 500;
+  transition: var(--transition); display: flex; align-items: center; gap: 8px; justify-content: center;
+}
+.sidebar-footer button:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+
+/* ==================== MAIN CONTENT ==================== */
+.main-content {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+}
+.main-header {
+  height: var(--header-height); background: var(--white);
+  border-bottom: 1px solid var(--stone-200);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; flex-shrink: 0;
+}
+.main-header .header-left { display: flex; align-items: center; gap: 16px; }
+.main-header .header-left h2 { font-size: 20px; font-weight: 600; }
+.main-header .header-left .breadcrumb { font-size: 12px; color: var(--stone-500); }
+.main-header .header-left .breadcrumb span { color: var(--navy-700); font-weight: 500; }
+
+.header-actions { display: flex; align-items: center; gap: 10px; }
+
+.header-btn {
+  padding: 8px 16px; border-radius: var(--radius-md);
+  font-size: 12px; font-weight: 600; transition: var(--transition);
+  display: flex; align-items: center; gap: 6px;
+}
+.header-btn-outline {
+  border: 1.5px solid var(--stone-200); color: var(--navy-700);
+}
+.header-btn-outline:hover { border-color: var(--navy-300); background: var(--navy-50); }
+.header-btn-fill {
+  background: var(--navy-700); color: var(--white);
+}
+.header-btn-fill:hover { background: var(--navy-800); }
+
+.search-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--stone-50); border: 1.5px solid var(--stone-200);
+  border-radius: var(--radius-md); padding: 7px 12px; width: 240px;
+}
+.search-bar input {
+  border: none; background: none; outline: none; flex: 1; font-size: 13px;
+  color: var(--black);
+}
+.search-bar input::placeholder { color: var(--stone-400); }
+.search-bar .search-icon { color: var(--stone-400); font-size: 14px; }
+
+.notif-btn {
+  width: 36px; height: 36px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition); position: relative; color: var(--stone-500);
+}
+.notif-btn:hover { background: var(--stone-100); color: var(--navy-700); }
+.notif-dot {
+  position: absolute; top: 6px; right: 6px; width: 7px; height: 7px;
+  background: #C4474B; border-radius: 50%; border: 2px solid var(--white);
+}
+
+.page-content {
+  flex: 1; overflow-y: auto; padding: 28px;
+}
+.page-content::-webkit-scrollbar { width: 6px; }
+.page-content::-webkit-scrollbar-track { background: transparent; }
+.page-content::-webkit-scrollbar-thumb { background: var(--stone-300); border-radius: 3px; }
+
+/* ==================== PAGE: HIDDEN ==================== */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ==================== DASHBOARD ==================== */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--white); border-radius: var(--radius-lg); padding: 22px;
+  border: 1px solid var(--stone-200); transition: var(--transition);
+}
+.stat-card:hover { box-shadow: var(--shadow-md); border-color: var(--stone-300); }
+.stat-card .stat-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+}
+.stat-card .stat-label { font-size: 12px; font-weight: 500; color: var(--stone-500); text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card .stat-icon { font-size: 18px; }
+.stat-card .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 700; color: var(--navy-900); line-height: 1; }
+.stat-card .stat-change { font-size: 11px; margin-top: 6px; font-weight: 500; }
+.stat-card .stat-change.up { color: var(--success-text); }
+.stat-card .stat-change.down { color: var(--danger-text); }
+
+.dashboard-grid {
+  display: grid; grid-template-columns: 2fr 1fr; gap: 20px;
+}
+.dashboard-grid-3 {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px;
+}
+
+/* ==================== CARDS ==================== */
+.card {
+  background: var(--white); border-radius: var(--radius-lg);
+  border: 1px solid var(--stone-200); overflow: hidden;
+}
+.card-header {
+  padding: 18px 22px; border-bottom: 1px solid var(--stone-100);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-header h3 { font-size: 16px; font-weight: 600; }
+.card-header .card-action {
+  font-size: 12px; color: var(--navy-600); font-weight: 600; cursor: pointer;
+  transition: var(--transition);
+}
+.card-header .card-action:hover { color: var(--navy-800); }
+.card-body { padding: 16px 22px; }
+.card-body.no-pad { padding: 0; }
+
+/* ==================== TABLES ==================== */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table thead th {
+  text-align: left; padding: 10px 16px; font-size: 11px;
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--stone-500); border-bottom: 1px solid var(--stone-200);
+  background: var(--stone-50);
+}
+.data-table tbody td {
+  padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--stone-100);
+  color: var(--stone-700);
+}
+.data-table tbody tr { transition: var(--transition); cursor: pointer; }
+.data-table tbody tr:hover { background: var(--navy-50); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+/* ==================== BADGES & STATUS ==================== */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+}
+.badge-success { background: var(--success-bg); color: var(--success-text); }
+.badge-warning { background: var(--warning-bg); color: var(--warning-text); }
+.badge-danger { background: var(--danger-bg); color: var(--danger-text); }
+.badge-info { background: var(--info-bg); color: var(--info-text); }
+.badge-neutral { background: var(--stone-100); color: var(--stone-700); }
+.badge-purple { background: var(--purple-bg); color: var(--purple-text); }
+
+.dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.dot-green { background: var(--success-text); }
+.dot-yellow { background: var(--warning-text); }
+.dot-red { background: var(--danger-text); }
+.dot-blue { background: var(--info-text); }
+.dot-gray { background: var(--stone-400); }
+
+.priority-bar { width: 3px; height: 32px; border-radius: 2px; flex-shrink: 0; }
+
+/* ==================== CASE LIST ITEMS ==================== */
+.case-item {
+  display: flex; align-items: center; gap: 14px; padding: 14px 22px;
+  border-bottom: 1px solid var(--stone-100); cursor: pointer;
+  transition: var(--transition);
+}
+.case-item:hover { background: var(--navy-50); }
+.case-item:last-child { border-bottom: none; }
+.case-item .case-info { flex: 1; }
+.case-item .case-name { font-weight: 600; font-size: 13px; color: var(--navy-900); }
+.case-item .case-meta { font-size: 11px; color: var(--stone-500); margin-top: 2px; }
+.case-item .case-right { text-align: right; }
+.case-item .case-date { font-size: 12px; color: var(--stone-500); }
+
+/* ==================== SCHEDULE TIMELINE ==================== */
+.timeline-item {
+  display: flex; gap: 14px; padding: 12px 0;
+  position: relative;
+}
+.timeline-item:not(:last-child)::after {
+  content: ''; position: absolute; left: 15px; top: 38px; bottom: -2px;
+  width: 1.5px; background: var(--stone-200);
+}
+.timeline-dot {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; z-index: 1;
+}
+.timeline-dot.blue { background: var(--info-bg); color: var(--info-text); }
+.timeline-dot.green { background: var(--success-bg); color: var(--success-text); }
+.timeline-dot.orange { background: var(--warning-bg); color: var(--warning-text); }
+.timeline-dot.purple { background: var(--purple-bg); color: var(--purple-text); }
+
+.timeline-content { flex: 1; }
+.timeline-content .tl-title { font-weight: 600; font-size: 13px; color: var(--navy-900); }
+.timeline-content .tl-desc { font-size: 12px; color: var(--stone-500); margin-top: 2px; }
+.timeline-content .tl-time { font-size: 11px; color: var(--navy-500); font-weight: 500; margin-top: 3px; }
+
+/* ==================== TABS ==================== */
+.tabs {
+  display: flex; gap: 0; border-bottom: 1.5px solid var(--stone-200); margin-bottom: 24px;
+}
+.tab {
+  padding: 10px 20px; font-size: 13px; font-weight: 500; color: var(--stone-500);
+  cursor: pointer; transition: var(--transition); position: relative;
+  border-bottom: 2px solid transparent; margin-bottom: -1.5px;
+}
+.tab:hover { color: var(--navy-700); }
+.tab.active { color: var(--navy-800); font-weight: 600; border-bottom-color: var(--navy-700); }
+
+/* ==================== FORMS ==================== */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.form-full { grid-column: 1 / -1; }
+
+.form-section {
+  margin-bottom: 28px;
+}
+.form-section-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600;
+  color: var(--navy-800); margin-bottom: 4px;
+}
+.form-section-desc {
+  font-size: 12px; color: var(--stone-500); margin-bottom: 16px;
+}
+.form-section-divider {
+  border: none; border-top: 1px solid var(--stone-200); margin: 6px 0 20px;
+}
+
+.form-group textarea {
+  width: 100%; padding: 11px 14px; border: 1.5px solid var(--stone-200);
+  border-radius: var(--radius-md); font-size: 14px; color: var(--black);
+  transition: var(--transition); background: var(--white); outline: none;
+  resize: vertical; min-height: 80px;
+}
+.form-group textarea:focus {
+  border-color: var(--navy-500); box-shadow: 0 0 0 3px rgba(43,76,111,0.1);
+}
+
+/* ==================== RESOURCE CALENDAR ==================== */
+.calendar-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+}
+.calendar-nav { display: flex; align-items: center; gap: 12px; }
+.calendar-nav button {
+  width: 34px; height: 34px; border-radius: var(--radius-md);
+  border: 1.5px solid var(--stone-200); display: flex; align-items: center;
+  justify-content: center; transition: var(--transition); color: var(--navy-700);
+}
+.calendar-nav button:hover { background: var(--navy-50); border-color: var(--navy-300); }
+.calendar-nav .cal-month {
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600;
+  color: var(--navy-900); min-width: 180px; text-align: center;
+}
+
+.schedule-grid {
+  display: grid; grid-template-columns: 100px repeat(7, 1fr); gap: 0;
+  border: 1px solid var(--stone-200); border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--white);
+}
+.schedule-header-cell {
+  padding: 12px 8px; text-align: center; background: var(--stone-50);
+  border-bottom: 1px solid var(--stone-200); border-right: 1px solid var(--stone-100);
+  font-size: 11px; font-weight: 600; color: var(--stone-500); text-transform: uppercase;
+}
+.schedule-header-cell.today { color: var(--navy-700); }
+.schedule-header-cell .day-num {
+  font-family: 'Cormorant Garamond', serif; font-size: 20px;
+  font-weight: 700; color: var(--navy-900); margin-top: 2px;
+}
+.schedule-header-cell.today .day-num {
+  background: var(--navy-700); color: var(--white); width: 30px; height: 30px;
+  border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+}
+
+.schedule-resource {
+  padding: 12px 10px; border-bottom: 1px solid var(--stone-100);
+  border-right: 1px solid var(--stone-200); background: var(--stone-50);
+  font-size: 11px; font-weight: 600; color: var(--navy-800);
+  display: flex; align-items: center; gap: 6px;
+}
+.schedule-resource .res-icon { font-size: 14px; }
+
+.schedule-cell {
+  padding: 6px; border-bottom: 1px solid var(--stone-100);
+  border-right: 1px solid var(--stone-100); min-height: 70px;
+  position: relative;
+}
+.schedule-event {
+  padding: 4px 8px; border-radius: var(--radius-sm); font-size: 10px;
+  font-weight: 600; margin-bottom: 3px; cursor: pointer;
+  transition: var(--transition);
+}
+.schedule-event:hover { filter: brightness(0.95); transform: scale(1.02); }
+.schedule-event.ev-blue { background: var(--info-bg); color: var(--info-text); border-left: 2.5px solid var(--info-text); }
+.schedule-event.ev-green { background: var(--success-bg); color: var(--success-text); border-left: 2.5px solid var(--success-text); }
+.schedule-event.ev-orange { background: var(--warning-bg); color: var(--warning-text); border-left: 2.5px solid var(--warning-text); }
+.schedule-event.ev-purple { background: var(--purple-bg); color: var(--purple-text); border-left: 2.5px solid var(--purple-text); }
+
+/* ==================== CEMETERY MAP PLACEHOLDER ==================== */
+.map-placeholder {
+  background: var(--stone-100); border-radius: var(--radius-lg);
+  height: 300px; display: flex; align-items: center; justify-content: center;
+  border: 1.5px dashed var(--stone-300); color: var(--stone-500); font-size: 13px;
+  font-weight: 500;
+}
+
+/* ==================== PLOT GRID ==================== */
+.plot-grid {
+  display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px;
+  margin-top: 16px;
+}
+.plot-cell {
+  aspect-ratio: 1; border-radius: var(--radius-sm); display: flex;
+  align-items: center; justify-content: center; font-size: 9px; font-weight: 700;
+  cursor: pointer; transition: var(--transition);
+}
+.plot-cell:hover { transform: scale(1.1); z-index: 1; }
+.plot-cell.available { background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); }
+.plot-cell.occupied { background: var(--stone-100); color: var(--stone-400); border: 1px solid var(--stone-200); }
+.plot-cell.reserved { background: var(--info-bg); color: var(--info-text); border: 1px solid var(--info-border); }
+.plot-cell.pending { background: var(--warning-bg); color: var(--warning-text); border: 1px solid var(--warning-border); }
+
+/* ==================== FAMILY PORTAL ==================== */
+.portal-header {
+  background: var(--navy-900); color: var(--white); padding: 32px 28px;
+  border-radius: var(--radius-xl); margin-bottom: 24px;
+}
+.portal-header h2 { color: var(--white); font-size: 28px; margin-bottom: 4px; }
+.portal-header p { color: var(--navy-300); font-size: 14px; }
+
+.portal-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.portal-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  border: 1px solid var(--stone-200); padding: 24px;
+  transition: var(--transition); cursor: pointer;
+}
+.portal-card:hover { box-shadow: var(--shadow-md); border-color: var(--navy-200); }
+.portal-card .pc-icon {
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 14px;
+}
+.portal-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; color: var(--navy-900); margin-bottom: 6px; }
+.portal-card p { font-size: 12px; color: var(--stone-500); line-height: 1.5; }
+
+/* ==================== MODAL ==================== */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(15,20,25,0.5);
+  backdrop-filter: blur(4px); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; transition: var(--transition);
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+
+.modal {
+  background: var(--white); border-radius: var(--radius-xl);
+  width: 90%; max-width: 720px; max-height: 85vh; overflow-y: auto;
+  box-shadow: var(--shadow-xl); transform: scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.modal-overlay.active .modal { transform: scale(1); }
+
+.modal-header {
+  padding: 22px 28px; border-bottom: 1px solid var(--stone-200);
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; background: var(--white); z-index: 1;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+.modal-header h3 { font-size: 20px; }
+.modal-close {
+  width: 32px; height: 32px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--stone-500); transition: var(--transition); font-size: 18px;
+}
+.modal-close:hover { background: var(--stone-100); color: var(--navy-700); }
+.modal-body { padding: 24px 28px; }
+.modal-footer {
+  padding: 16px 28px; border-top: 1px solid var(--stone-200);
+  display: flex; justify-content: flex-end; gap: 10px;
+  position: sticky; bottom: 0; background: var(--white);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+
+/* ==================== LOCATION CARDS ==================== */
+.location-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.location-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  border: 1px solid var(--stone-200); overflow: hidden;
+  transition: var(--transition); cursor: pointer;
+}
+.location-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.location-card .loc-banner {
+  height: 100px; background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
+  display: flex; align-items: flex-end; padding: 14px;
+}
+.location-card .loc-banner .loc-type {
+  background: rgba(255,255,255,0.15); color: var(--white);
+  padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600;
+  backdrop-filter: blur(8px);
+}
+.location-card .loc-body { padding: 16px; }
+.location-card .loc-name {
+  font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 700;
+  color: var(--navy-900); margin-bottom: 4px;
+}
+.location-card .loc-addr { font-size: 12px; color: var(--stone-500); margin-bottom: 10px; }
+.location-card .loc-stats { display: flex; gap: 16px; }
+.location-card .loc-stat { text-align: center; }
+.location-card .loc-stat .ls-num {
+  font-family: 'Cormorant Garamond', serif; font-size: 20px;
+  font-weight: 700; color: var(--navy-800);
+}
+.location-card .loc-stat .ls-label { font-size: 10px; color: var(--stone-500); }
+
+/* ==================== KANBAN ==================== */
+.kanban { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; }
+.kanban-col { min-width: 280px; flex: 1; }
+.kanban-col-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; margin-bottom: 10px;
+}
+.kanban-col-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.kanban-col-count {
+  background: var(--stone-100); color: var(--stone-700); font-size: 11px;
+  font-weight: 700; padding: 2px 8px; border-radius: 10px;
+}
+
+.kanban-card {
+  background: var(--white); border: 1px solid var(--stone-200);
+  border-radius: var(--radius-md); padding: 14px; margin-bottom: 10px;
+  cursor: pointer; transition: var(--transition);
+}
+.kanban-card:hover { box-shadow: var(--shadow-md); border-color: var(--navy-200); }
+.kanban-card .kc-title { font-weight: 600; font-size: 13px; color: var(--navy-900); margin-bottom: 6px; }
+.kanban-card .kc-meta { font-size: 11px; color: var(--stone-500); margin-bottom: 8px; }
+.kanban-card .kc-footer { display: flex; align-items: center; justify-content: space-between; }
+.kanban-card .kc-avatar {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--navy-100);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--navy-700);
+}
+
+/* ==================== MISC ==================== */
+.flex { display: flex; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+.mt-20 { margin-top: 20px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+.text-sm { font-size: 12px; }
+.text-xs { font-size: 11px; }
+.text-muted { color: var(--stone-500); }
+.text-navy { color: var(--navy-700); }
+.font-bold { font-weight: 700; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ==================== EMPTY STATE ==================== */
+.empty-state {
+  text-align: center; padding: 48px 24px; color: var(--stone-500);
+}
+.empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state h4 { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--navy-800); margin-bottom: 6px; }
+.empty-state p { font-size: 13px; max-width: 300px; margin: 0 auto; }
+
+/* ==================== PRENEED ==================== */
+.preneed-card {
+  background: var(--white); border: 1px solid var(--stone-200); border-radius: var(--radius-lg);
+  padding: 18px; transition: var(--transition); cursor: pointer;
+}
+.preneed-card:hover { box-shadow: var(--shadow-md); }
+.preneed-card .pn-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.preneed-card .pn-name { font-weight: 600; font-size: 14px; color: var(--navy-900); }
+.preneed-card .pn-contract { font-size: 11px; color: var(--stone-500); }
+.preneed-card .pn-details { display: flex; gap: 20px; margin-top: 8px; }
+.preneed-card .pn-detail { }
+.preneed-card .pn-detail .pn-label { font-size: 10px; color: var(--stone-500); text-transform: uppercase; letter-spacing: 0.5px; }
+.preneed-card .pn-detail .pn-value { font-size: 12px; font-weight: 600; color: var(--navy-800); margin-top: 1px; }
+
+/* Scrollbar for kanban */
+.kanban::-webkit-scrollbar { height: 6px; }
+.kanban::-webkit-scrollbar-track { background: transparent; }
+.kanban::-webkit-scrollbar-thumb { background: var(--stone-300); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div id="login-screen">
+  <div class="login-container">
+    <div class="login-logo">
+      <div class="logo-circle"><span>M</span></div>
+      <h1 class="font-serif">Memorial</h1>
+      <p>Operations Platform</p>
+    </div>
+    <div class="login-card">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Select your role to continue</p>
+
+      <div class="role-selector" id="roleSelector">
+        <div class="role-btn active" data-role="admin" onclick="selectRole(this)">
+          <div class="role-icon">📊</div>
+          <div class="role-name">Ops Manager</div>
+          <div class="role-desc">Full access</div>
+        </div>
+        <div class="role-btn" data-role="director" onclick="selectRole(this)">
+          <div class="role-icon">🤝</div>
+          <div class="role-name">Funeral Director</div>
+          <div class="role-desc">Case management</div>
+        </div>
+        <div class="role-btn" data-role="intake" onclick="selectRole(this)">
+          <div class="role-icon">📞</div>
+          <div class="role-name">Intake Agent</div>
+          <div class="role-desc">First call</div>
+        </div>
+        <div class="role-btn" data-role="burial" onclick="selectRole(this)">
+          <div class="role-icon">🌿</div>
+          <div class="role-name">Burial Director</div>
+          <div class="role-desc">Cemetery ops</div>
+        </div>
+        <div class="role-btn" data-role="planner" onclick="selectRole(this)">
+          <div class="role-icon">📋</div>
+          <div class="role-name">Event Planner</div>
+          <div class="role-desc">Services & programs</div>
+        </div>
+        <div class="role-btn" data-role="family" onclick="selectRole(this)">
+          <div class="role-icon">💐</div>
+          <div class="role-name">Family Portal</div>
+          <div class="role-desc">Service details</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Location</label>
+        <select id="loginLocation">
+          <option>All Locations</option>
+          <option>Sandy Mortuary</option>
+          <option>Cottonwood Heights Mortuary</option>
+          <option>Murray Mortuary</option>
+          <option>Holladay Mortuary</option>
+          <option>West Jordan Mortuary</option>
+          <option>Bountiful Mortuary</option>
+          <option>Memorial Gardens Cemetery — Sandy</option>
+          <option>Valley View Cemetery — West Jordan</option>
+          <option>Mountain Rest Cemetery — Cottonwood Heights</option>
+          <option>Lakeside Memorial Cemetery — Murray</option>
+          <option>Sunset Hills Cemetery — Bountiful</option>
+        </select>
+      </div>
+
+      <button class="btn-primary" onclick="doLogin()">Enter Platform</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MAIN APP ==================== -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="s-circle"><span>M</span></div>
+        <div class="s-text">
+          <h3>Memorial</h3>
+          <p>Operations</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-role">
+      <div class="role-avatar" id="sidebarAvatar">JD</div>
+      <div class="role-info">
+        <div class="role-title" id="sidebarRoleName">James Donovan</div>
+        <div class="role-loc" id="sidebarRoleLoc">Operations Manager</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <!-- Populated by JS based on role -->
+    </nav>
+
+    <div class="sidebar-footer">
+      <button onclick="doLogout()">⬅ Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <header class="main-header">
+      <div class="header-left">
+        <h2 id="pageTitle" class="font-serif">Dashboard</h2>
+      </div>
+      <div class="header-actions">
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search cases, contacts..." />
+        </div>
+        <button class="notif-btn">
+          🔔
+          <span class="notif-dot"></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- ========== DASHBOARD ========== -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Active Cases</span>
+              <span class="stat-icon">📂</span>
+            </div>
+            <div class="stat-value">47</div>
+            <div class="stat-change up">↑ 12% from last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Services This Week</span>
+              <span class="stat-icon">🕊</span>
+            </div>
+            <div class="stat-value">18</div>
+            <div class="stat-change down">↓ 3 from last week</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Preneed Contracts</span>
+              <span class="stat-icon">📝</span>
+            </div>
+            <div class="stat-value">312</div>
+            <div class="stat-change up">↑ 8 new this month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Vehicles Available</span>
+              <span class="stat-icon">🚗</span>
+            </div>
+            <div class="stat-value">9<span style="font-size:18px;color:var(--stone-400);font-family:'DM Sans'"> / 14</span></div>
+            <div class="stat-change">5 in use today</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <!-- Urgent Cases -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Cases Requiring Attention</h3>
+              <span class="card-action" onclick="navigateTo('cases')">View All →</span>
+            </div>
+            <div class="card-body no-pad">
+              <div class="case-item" onclick="navigateTo('case-detail')">
+                <div class="priority-bar" style="background:var(--danger-text)"></div>
+                <div class="case-info">
+                  <div class="case-name">Margaret A. Thornton</div>
+                  <div class="case-meta">Sandy Mortuary · Pending death certificate · Service in 2 days</div>
+                </div>
+                <div class="case-right">
+                  <span class="badge badge-danger"><span class="dot dot-red"></span> Urgent</span>
+                </div>
+              </div>
+              <div class="case-item">
+                <div class="priority-bar" style="background:var(--warning-text)"></div>
+                <div class="case-info">
+                  <div class="case-name">Robert J. Kimball</div>
+                  <div class="case-meta">Murray Mortuary · Awaiting family arrangements · Removal complete</div>
+                </div>
+                <div class="case-right">
+                  <span class="badge badge-warning"><span class="dot dot-yellow"></span> Waiting</span>
+                </div>
+              </div>
+              <div class="case-item">
+                <div class="priority-bar" style="background:var(--warning-text)"></div>
+                <div class="case-info">
+                  <div class="case-name">Patricia Elaine Wong</div>
+                  <div class="case-meta">Holladay Mortuary · Casket not yet ordered · Service in 3 days</div>
+                </div>
+                <div class="case-right">
+                  <span class="badge badge-warning"><span class="dot dot-yellow"></span> Action Needed</span>
+                </div>
+              </div>
+              <div class="case-item">
+                <div class="priority-bar" style="background:var(--info-text)"></div>
+                <div class="case-info">
+                  <div class="case-name">William T. Henderson</div>
+                  <div class="case-meta">West Jordan Mortuary · Preneed conversion · Family confirmed preferences</div>
+                </div>
+                <div class="case-right">
+                  <span class="badge badge-info"><span class="dot dot-blue"></span> In Progress</span>
+                </div>
+              </div>
+              <div class="case-item">
+                <div class="priority-bar" style="background:var(--success-text)"></div>
+                <div class="case-info">
+                  <div class="case-name">Dorothy M. Callister</div>
+                  <div class="case-meta">Bountiful Mortuary · All arrangements complete · Service tomorrow</div>
+                </div>
+                <div class="case-right">
+                  <span class="badge badge-success"><span class="dot dot-green"></span> Ready</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Timeline -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Today's Schedule</h3>
+              <span class="card-action" onclick="navigateTo('schedule')">Full Schedule →</span>
+            </div>
+            <div class="card-body">
+              <div class="timeline-item">
+                <div class="timeline-dot blue">🚐</div>
+                <div class="timeline-content">
+                  <div class="tl-title">Removal — St. Mark's Hospital</div>
+                  <div class="tl-desc">Transport to Sandy Mortuary care center</div>
+                  <div class="tl-time">8:30 AM · Van #3</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot green">🤝</div>
+                <div class="timeline-content">
+                  <div class="tl-title">Arrangement Conference — Kimball Family</div>
+                  <div class="tl-desc">Dir. Sarah Jensen · Murray Mortuary</div>
+                  <div class="tl-time">10:00 AM — 11:30 AM</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot purple">⛪</div>
+                <div class="timeline-content">
+                  <div class="tl-title">Visitation — Thornton Service</div>
+                  <div class="tl-desc">Sandy Mortuary Chapel · Setup at 1:00 PM</div>
+                  <div class="tl-time">2:00 PM — 4:00 PM</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot orange">🌿</div>
+                <div class="timeline-content">
+                  <div class="tl-title">Graveside — Callister Interment</div>
+                  <div class="tl-desc">Memorial Gardens Cemetery, Section D, Plot 14</div>
+                  <div class="tl-time">3:30 PM</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Row -->
+        <div class="dashboard-grid-3">
+          <div class="card">
+            <div class="card-header">
+              <h3>Location Summary</h3>
+              <span class="card-action" onclick="navigateTo('locations')">All Locations →</span>
+            </div>
+            <div class="card-body no-pad">
+              <table class="data-table">
+                <thead><tr><th>Location</th><th>Active</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">Sandy</td><td>12</td><td><span class="badge badge-success">Normal</span></td></tr>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">Murray</td><td>9</td><td><span class="badge badge-success">Normal</span></td></tr>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">Cottonwood Hts</td><td>8</td><td><span class="badge badge-warning">High Volume</span></td></tr>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">Holladay</td><td>7</td><td><span class="badge badge-success">Normal</span></td></tr>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">West Jordan</td><td>6</td><td><span class="badge badge-success">Normal</span></td></tr>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">Bountiful</td><td>5</td><td><span class="badge badge-success">Normal</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Event Planning Queue</h3>
+              <span class="card-action" onclick="navigateTo('events')">View Queue →</span>
+            </div>
+            <div class="card-body no-pad">
+              <div class="case-item">
+                <div class="case-info">
+                  <div class="case-name">Thornton Memorial Service</div>
+                  <div class="case-meta">Program draft pending · Feb 28</div>
+                </div>
+                <span class="badge badge-warning">Draft</span>
+              </div>
+              <div class="case-item">
+                <div class="case-info">
+                  <div class="case-name">Wong Celebration of Life</div>
+                  <div class="case-meta">Photos received · Mar 2</div>
+                </div>
+                <span class="badge badge-info">In Design</span>
+              </div>
+              <div class="case-item">
+                <div class="case-info">
+                  <div class="case-name">Henderson Graveside</div>
+                  <div class="case-meta">Confirmed · Mar 3</div>
+                </div>
+                <span class="badge badge-success">Complete</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Fleet Status</h3>
+              <span class="card-action" onclick="navigateTo('schedule')">Manage →</span>
+            </div>
+            <div class="card-body no-pad">
+              <table class="data-table">
+                <thead><tr><th>Vehicle</th><th>Status</th><th>Location</th></tr></thead>
+                <tbody>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">Hearse #1</td><td><span class="badge badge-success">Available</span></td><td>Sandy</td></tr>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">Hearse #2</td><td><span class="badge badge-info">In Use</span></td><td>Murray</td></tr>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">Van #3</td><td><span class="badge badge-info">In Use</span></td><td>En Route</td></tr>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">Limo #1</td><td><span class="badge badge-success">Available</span></td><td>Holladay</td></tr>
+                  <tr><td style="font-weight:600;color:var(--navy-900)">Van #4</td><td><span class="badge badge-warning">Maintenance</span></td><td>—</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== CASES LIST ========== -->
+      <div class="page" id="page-cases">
+        <div class="flex-between mb-24">
+          <div class="tabs" id="caseTabs">
+            <div class="tab active" onclick="switchTab(this,'caseTabs')">All Cases <span style="color:var(--stone-400);font-weight:400">(47)</span></div>
+            <div class="tab" onclick="switchTab(this,'caseTabs')">Active <span style="color:var(--stone-400);font-weight:400">(32)</span></div>
+            <div class="tab" onclick="switchTab(this,'caseTabs')">Pending <span style="color:var(--stone-400);font-weight:400">(8)</span></div>
+            <div class="tab" onclick="switchTab(this,'caseTabs')">Completed <span style="color:var(--stone-400);font-weight:400">(7)</span></div>
+          </div>
+          <button class="header-btn header-btn-fill" onclick="openModal('newCaseModal')">+ New Case</button>
+        </div>
+
+        <div class="card">
+          <div class="card-body no-pad">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Case #</th>
+                  <th>Decedent</th>
+                  <th>Location</th>
+                  <th>Director</th>
+                  <th>Service Type</th>
+                  <th>Service Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr onclick="navigateTo('case-detail')">
+                  <td style="font-weight:600;color:var(--navy-600)">MC-2026-0284</td>
+                  <td style="font-weight:600;color:var(--navy-900)">Margaret A. Thornton</td>
+                  <td>Sandy</td>
+                  <td>James Donovan</td>
+                  <td><span class="badge badge-neutral">Traditional Burial</span></td>
+                  <td>Feb 28, 2026</td>
+                  <td><span class="badge badge-danger"><span class="dot dot-red"></span> Urgent</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--navy-600)">MC-2026-0283</td>
+                  <td style="font-weight:600;color:var(--navy-900)">Robert J. Kimball</td>
+                  <td>Murray</td>
+                  <td>Sarah Jensen</td>
+                  <td><span class="badge badge-neutral">Cremation</span></td>
+                  <td>TBD</td>
+                  <td><span class="badge badge-warning"><span class="dot dot-yellow"></span> Arranging</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--navy-600)">MC-2026-0282</td>
+                  <td style="font-weight:600;color:var(--navy-900)">Patricia Elaine Wong</td>
+                  <td>Holladay</td>
+                  <td>Michael Chen</td>
+                  <td><span class="badge badge-neutral">Celebration of Life</span></td>
+                  <td>Mar 2, 2026</td>
+                  <td><span class="badge badge-info"><span class="dot dot-blue"></span> In Progress</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--navy-600)">MC-2026-0281</td>
+                  <td style="font-weight:600;color:var(--navy-900)">William T. Henderson</td>
+                  <td>West Jordan</td>
+                  <td>Lisa Park</td>
+                  <td><span class="badge badge-neutral">Graveside</span></td>
+                  <td>Mar 3, 2026</td>
+                  <td><span class="badge badge-info"><span class="dot dot-blue"></span> In Progress</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--navy-600)">MC-2026-0280</td>
+                  <td style="font-weight:600;color:var(--navy-900)">Dorothy M. Callister</td>
+                  <td>Bountiful</td>
+                  <td>James Donovan</td>
+                  <td><span class="badge badge-neutral">Traditional Burial</span></td>
+                  <td>Feb 27, 2026</td>
+                  <td><span class="badge badge-success"><span class="dot dot-green"></span> Ready</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--navy-600)">MC-2026-0279</td>
+                  <td style="font-weight:600;color:var(--navy-900)">George F. Nakamura</td>
+                  <td>Cottonwood Hts</td>
+                  <td>Sarah Jensen</td>
+                  <td><span class="badge badge-neutral">Direct Cremation</span></td>
+                  <td>N/A</td>
+                  <td><span class="badge badge-success"><span class="dot dot-green"></span> Complete</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--navy-600)">MC-2026-0278</td>
+                  <td style="font-weight:600;color:var(--navy-900)">Evelyn R. Matsuda</td>
+                  <td>Sandy</td>
+                  <td>Michael Chen</td>
+                  <td><span class="badge badge-neutral">Memorial Service</span></td>
+                  <td>Mar 5, 2026</td>
+                  <td><span class="badge badge-info"><span class="dot dot-blue"></span> In Progress</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== CASE DETAIL ========== -->
+      <div class="page" id="page-case-detail">
+        <div class="flex-between mb-24">
+          <div>
+            <div class="text-sm text-muted" style="margin-bottom:4px; cursor:pointer" onclick="navigateTo('cases')">← Back to Cases</div>
+            <h2 class="font-serif" style="font-size:26px;">Margaret A. Thornton</h2>
+            <div class="flex gap-8" style="margin-top:6px">
+              <span class="badge badge-neutral">MC-2026-0284</span>
+              <span class="badge badge-danger"><span class="dot dot-red"></span> Urgent</span>
+              <span class="badge badge-neutral">Traditional Burial</span>
+            </div>
+          </div>
+          <div class="flex gap-8">
+            <button class="header-btn header-btn-outline">📄 Documents</button>
+            <button class="header-btn header-btn-outline">✉ Message Family</button>
+            <button class="header-btn header-btn-fill">✏ Edit Case</button>
+          </div>
+        </div>
+
+        <div class="tabs" id="caseDetailTabs">
+          <div class="tab active" onclick="switchTab(this,'caseDetailTabs')">Overview</div>
+          <div class="tab" onclick="switchTab(this,'caseDetailTabs')">Decedent Info</div>
+          <div class="tab" onclick="switchTab(this,'caseDetailTabs')">Services & Merchandise</div>
+          <div class="tab" onclick="switchTab(this,'caseDetailTabs')">Documents</div>
+          <div class="tab" onclick="switchTab(this,'caseDetailTabs')">Activity</div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div>
+            <!-- Decedent Summary -->
+            <div class="card mb-16">
+              <div class="card-header"><h3>Decedent Information</h3></div>
+              <div class="card-body">
+                <div class="form-grid">
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Full Legal Name</div>
+                    <div style="font-weight:600;color:var(--navy-900)">Margaret Ann Thornton</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Date of Birth</div>
+                    <div style="font-weight:600;color:var(--navy-900)">April 12, 1941</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Date of Death</div>
+                    <div style="font-weight:600;color:var(--navy-900)">February 24, 2026</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Place of Death</div>
+                    <div style="font-weight:600;color:var(--navy-900)">St. Mark's Hospital, SLC</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Residence</div>
+                    <div style="font-weight:600;color:var(--navy-900)">1842 E Hillcrest Dr, Sandy, UT</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Marital Status</div>
+                    <div style="font-weight:600;color:var(--navy-900)">Widowed</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Veteran Status</div>
+                    <div style="font-weight:600;color:var(--navy-900)">No</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">SSN (Last 4)</div>
+                    <div style="font-weight:600;color:var(--navy-900)">••••-4821</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Service Details -->
+            <div class="card mb-16">
+              <div class="card-header"><h3>Service Details</h3></div>
+              <div class="card-body">
+                <div class="form-grid">
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Service Type</div>
+                    <div style="font-weight:600;color:var(--navy-900)">Traditional Burial with Visitation</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Location</div>
+                    <div style="font-weight:600;color:var(--navy-900)">Sandy Mortuary Chapel</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Visitation</div>
+                    <div style="font-weight:600;color:var(--navy-900)">Feb 27, 2:00 PM — 4:00 PM</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Funeral Service</div>
+                    <div style="font-weight:600;color:var(--navy-900)">Feb 28, 11:00 AM</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Interment</div>
+                    <div style="font-weight:600;color:var(--navy-900)">Memorial Gardens Cemetery, Sec. B, Plot 47</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Officiant</div>
+                    <div style="font-weight:600;color:var(--navy-900)">Bishop David R. Hansen</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Music</div>
+                    <div style="font-weight:600;color:var(--navy-900)">Organist — Carol Williams; Soloist — pending</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted" style="margin-bottom:2px">Pallbearers</div>
+                    <div style="font-weight:600;color:var(--navy-900)">6 confirmed (see list)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Merchandise -->
+            <div class="card">
+              <div class="card-header"><h3>Merchandise & Vendor Orders</h3></div>
+              <div class="card-body no-pad">
+                <table class="data-table">
+                  <thead><tr><th>Item</th><th>Vendor</th><th>Status</th><th>ETA</th></tr></thead>
+                  <tbody>
+                    <tr><td style="font-weight:600;color:var(--navy-900)">Batesville Monet Casket</td><td>Batesville</td><td><span class="badge badge-success">Delivered</span></td><td>—</td></tr>
+                    <tr><td style="font-weight:600;color:var(--navy-900)">Wilbert Bronze Vault</td><td>Wilbert</td><td><span class="badge badge-info">In Transit</span></td><td>Feb 27</td></tr>
+                    <tr><td style="font-weight:600;color:var(--navy-900)">Memorial Programs (150)</td><td>Internal</td><td><span class="badge badge-warning">In Design</span></td><td>Feb 27</td></tr>
+                    <tr><td style="font-weight:600;color:var(--navy-900)">Floral — Standing Spray</td><td>Utah Flower Co.</td><td><span class="badge badge-success">Confirmed</span></td><td>Feb 28</td></tr>
+                    <tr><td style="font-weight:600;color:var(--navy-900)">Register Book</td><td>Messenger</td><td><span class="badge badge-success">In Stock</span></td><td>—</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div>
+            <!-- Checklist -->
+            <div class="card mb-16">
+              <div class="card-header"><h3>Case Checklist</h3></div>
+              <div class="card-body">
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" checked style="accent-color:var(--navy-700)"> <span style="color:var(--stone-500);text-decoration:line-through">First call received</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" checked style="accent-color:var(--navy-700)"> <span style="color:var(--stone-500);text-decoration:line-through">Removal complete</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" checked style="accent-color:var(--navy-700)"> <span style="color:var(--stone-500);text-decoration:line-through">Arrangement conference</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" checked style="accent-color:var(--navy-700)"> <span style="color:var(--stone-500);text-decoration:line-through">Embalming authorization</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" checked style="accent-color:var(--navy-700)"> <span style="color:var(--stone-500);text-decoration:line-through">Embalming / preparation</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" style="accent-color:var(--navy-700)"> <span style="font-weight:600;color:var(--danger-text)">Death certificate filed</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" checked style="accent-color:var(--navy-700)"> <span style="color:var(--stone-500);text-decoration:line-through">Obituary submitted</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" style="accent-color:var(--navy-700)"> <span>Memorial program designed</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" style="accent-color:var(--navy-700)"> <span>Vehicles scheduled</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" checked style="accent-color:var(--navy-700)"> <span style="color:var(--stone-500);text-decoration:line-through">Cemetery plot confirmed</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer">
+                    <input type="checkbox" style="accent-color:var(--navy-700)"> <span>Opening / closing scheduled</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Next of Kin -->
+            <div class="card mb-16">
+              <div class="card-header"><h3>Next of Kin</h3></div>
+              <div class="card-body">
+                <div style="margin-bottom:14px">
+                  <div style="font-weight:600;color:var(--navy-900);font-size:13px">David Thornton</div>
+                  <div class="text-xs text-muted">Son · Primary Contact</div>
+                  <div class="text-xs text-navy" style="margin-top:2px">(801) 555-0142 · d.thornton@email.com</div>
+                </div>
+                <div>
+                  <div style="font-weight:600;color:var(--navy-900);font-size:13px">Karen Thornton-Reed</div>
+                  <div class="text-xs text-muted">Daughter</div>
+                  <div class="text-xs text-navy" style="margin-top:2px">(801) 555-0198</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Assigned Team -->
+            <div class="card">
+              <div class="card-header"><h3>Assigned Team</h3></div>
+              <div class="card-body">
+                <div style="display:flex;flex-direction:column;gap:12px">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:32px;height:32px;border-radius:50%;background:var(--navy-600);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">JD</div>
+                    <div>
+                      <div style="font-weight:600;font-size:12px;color:var(--navy-900)">James Donovan</div>
+                      <div class="text-xs text-muted">Funeral Director</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:32px;height:32px;border-radius:50%;background:var(--navy-500);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">AR</div>
+                    <div>
+                      <div style="font-weight:600;font-size:12px;color:var(--navy-900)">Amy Rodriguez</div>
+                      <div class="text-xs text-muted">Event Planner</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div style="width:32px;height:32px;border-radius:50%;background:var(--navy-400);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">TB</div>
+                    <div>
+                      <div style="font-weight:600;font-size:12px;color:var(--navy-900)">Tom Bradley</div>
+                      <div class="text-xs text-muted">Burial Director</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== INTAKE / FIRST CALL ========== -->
+      <div class="page" id="page-intake">
+        <div class="card" style="max-width:800px">
+          <div class="card-header">
+            <h3 style="font-size:20px">New First Call</h3>
+            <span class="badge badge-info">Draft</span>
+          </div>
+          <div class="card-body">
+            <div class="form-section">
+              <div class="form-section-title">Caller Information</div>
+              <div class="form-section-desc">Who is making the first call?</div>
+              <hr class="form-section-divider">
+              <div class="form-grid">
+                <div class="form-group"><label>Caller Name</label><input type="text" placeholder="Full name"></div>
+                <div class="form-group"><label>Relationship to Decedent</label><select><option>Select...</option><option>Spouse</option><option>Son/Daughter</option><option>Parent</option><option>Sibling</option><option>Other Family</option><option>Hospital/Facility</option><option>Coroner/ME</option></select></div>
+                <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="(801) 555-0000"></div>
+                <div class="form-group"><label>Email</label><input type="email" placeholder="email@example.com"></div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-title">Decedent Information</div>
+              <div class="form-section-desc">Basic information about the deceased</div>
+              <hr class="form-section-divider">
+              <div class="form-grid">
+                <div class="form-group"><label>First Name</label><input type="text" placeholder="First name"></div>
+                <div class="form-group"><label>Last Name</label><input type="text" placeholder="Last name"></div>
+                <div class="form-group"><label>Date of Death</label><input type="date"></div>
+                <div class="form-group"><label>Place of Death</label><input type="text" placeholder="Hospital, residence, etc."></div>
+                <div class="form-group form-full"><label>Location of Remains</label><input type="text" placeholder="Current location of the decedent"></div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-title">Assignment & Transport</div>
+              <div class="form-section-desc">Assign to a location and coordinate removal</div>
+              <hr class="form-section-divider">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Assigned Location</label>
+                  <select>
+                    <option>Select mortuary...</option>
+                    <option>Sandy Mortuary</option>
+                    <option>Cottonwood Heights Mortuary</option>
+                    <option>Murray Mortuary</option>
+                    <option>Holladay Mortuary</option>
+                    <option>West Jordan Mortuary</option>
+                    <option>Bountiful Mortuary</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Removal Needed?</label>
+                  <select>
+                    <option>Yes — Dispatch vehicle</option>
+                    <option>No — Family transport</option>
+                    <option>No — Already at facility</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Assigned Director</label>
+                  <select>
+                    <option>Auto-assign by location</option>
+                    <option>James Donovan — Sandy</option>
+                    <option>Sarah Jensen — Murray</option>
+                    <option>Michael Chen — Holladay</option>
+                    <option>Lisa Park — West Jordan</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Initial Service Preference</label>
+                  <select>
+                    <option>Unknown / Not discussed</option>
+                    <option>Traditional Burial</option>
+                    <option>Cremation</option>
+                    <option>Direct Cremation</option>
+                    <option>Memorial Service</option>
+                    <option>Graveside Only</option>
+                    <option>Celebration of Life</option>
+                  </select>
+                </div>
+                <div class="form-group form-full">
+                  <label>Notes</label>
+                  <textarea placeholder="Any special circumstances, family requests, or important details..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-title">Preneed Contract</div>
+              <div class="form-section-desc">Does the decedent have an existing preneed contract?</div>
+              <hr class="form-section-divider">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Preneed Contract?</label>
+                  <select>
+                    <option>No</option>
+                    <option>Yes — Lookup by name</option>
+                    <option>Yes — Contract number known</option>
+                    <option>Unsure — Check records</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>Contract Number (if known)</label><input type="text" placeholder="PN-XXXX-XXXX"></div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+              <button class="header-btn header-btn-outline">Save as Draft</button>
+              <button class="header-btn header-btn-fill" onclick="navigateTo('cases')">Create Case →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== SCHEDULE / RESOURCES ========== -->
+      <div class="page" id="page-schedule">
+        <div class="tabs mb-24" id="scheduleTabs">
+          <div class="tab active" onclick="switchTab(this,'scheduleTabs')">Resource Calendar</div>
+          <div class="tab" onclick="switchTab(this,'scheduleTabs')">Vehicles</div>
+          <div class="tab" onclick="switchTab(this,'scheduleTabs')">Venues & Chapels</div>
+          <div class="tab" onclick="switchTab(this,'scheduleTabs')">Care Centers</div>
+        </div>
+
+        <div class="calendar-header">
+          <div class="calendar-nav">
+            <button>◀</button>
+            <div class="cal-month">February 2026</div>
+            <button>▶</button>
+          </div>
+          <div class="flex gap-8">
+            <button class="header-btn header-btn-outline">Today</button>
+            <button class="header-btn header-btn-fill">+ Reserve Resource</button>
+          </div>
+        </div>
+
+        <div class="schedule-grid">
+          <!-- Header Row -->
+          <div class="schedule-header-cell"></div>
+          <div class="schedule-header-cell">Mon<div class="day-num">24</div></div>
+          <div class="schedule-header-cell">Tue<div class="day-num">25</div></div>
+          <div class="schedule-header-cell">Wed<div class="day-num">26</div></div>
+          <div class="schedule-header-cell today">Thu<div class="day-num">27</div></div>
+          <div class="schedule-header-cell">Fri<div class="day-num">28</div></div>
+          <div class="schedule-header-cell">Sat<div class="day-num">1</div></div>
+          <div class="schedule-header-cell">Sun<div class="day-num">2</div></div>
+
+          <!-- Hearse #1 -->
+          <div class="schedule-resource"><span class="res-icon">🚗</span> Hearse #1</div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"><div class="schedule-event ev-blue">Nakamura Transport</div></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"><div class="schedule-event ev-purple">Thornton Service</div></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"><div class="schedule-event ev-blue">Wong Service</div></div>
+
+          <!-- Hearse #2 -->
+          <div class="schedule-resource"><span class="res-icon">🚗</span> Hearse #2</div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"><div class="schedule-event ev-green">Available</div></div>
+          <div class="schedule-cell"><div class="schedule-event ev-orange">Kimball Removal</div></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+
+          <!-- Sandy Chapel -->
+          <div class="schedule-resource"><span class="res-icon">⛪</span> Sandy Chapel</div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"><div class="schedule-event ev-purple">Thornton Visit.</div></div>
+          <div class="schedule-cell"><div class="schedule-event ev-purple">Thornton Funeral</div></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+
+          <!-- Murray Chapel -->
+          <div class="schedule-resource"><span class="res-icon">⛪</span> Murray Chapel</div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"><div class="schedule-event ev-orange">Kimball Conf.</div></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+
+          <!-- Limo #1 -->
+          <div class="schedule-resource"><span class="res-icon">🚙</span> Limo #1</div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"><div class="schedule-event ev-purple">Thornton Family</div></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+
+          <!-- Van #3 -->
+          <div class="schedule-resource"><span class="res-icon">🚐</span> Van #3</div>
+          <div class="schedule-cell"><div class="schedule-event ev-blue">Removal</div></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"><div class="schedule-event ev-blue">Removal</div></div>
+          <div class="schedule-cell"><div class="schedule-event ev-blue">Removal — St. Mark's</div></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+          <div class="schedule-cell"></div>
+        </div>
+      </div>
+
+      <!-- ========== CEMETERY / BURIAL ========== -->
+      <div class="page" id="page-cemetery">
+        <div class="tabs mb-24" id="cemeteryTabs">
+          <div class="tab active" onclick="switchTab(this,'cemeteryTabs')">Plot Inventory</div>
+          <div class="tab" onclick="switchTab(this,'cemeteryTabs')">Interment Schedule</div>
+          <div class="tab" onclick="switchTab(this,'cemeteryTabs')">Headstones & Markers</div>
+          <div class="tab" onclick="switchTab(this,'cemeteryTabs')">Perpetual Care</div>
+        </div>
+
+        <div class="flex-between mb-24">
+          <div class="form-group" style="margin:0;width:250px">
+            <select style="padding:9px 14px;border:1.5px solid var(--stone-200);border-radius:var(--radius-md);font-size:13px;width:100%">
+              <option>Memorial Gardens Cemetery — Sandy</option>
+              <option>Valley View Cemetery — West Jordan</option>
+              <option>Mountain Rest Cemetery — Cottonwood Heights</option>
+              <option>Lakeside Memorial Cemetery — Murray</option>
+              <option>Sunset Hills Cemetery — Bountiful</option>
+            </select>
+          </div>
+          <div class="flex gap-8">
+            <button class="header-btn header-btn-outline">Export Inventory</button>
+            <button class="header-btn header-btn-fill">+ Record Interment</button>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div>
+            <div class="card mb-16">
+              <div class="card-header"><h3>Section B — Garden of Remembrance</h3></div>
+              <div class="card-body">
+                <div class="flex gap-16 mb-16">
+                  <div class="flex gap-8" style="align-items:center"><div class="plot-cell available" style="width:20px;height:20px;aspect-ratio:auto">  </div><span class="text-xs">Available (34)</span></div>
+                  <div class="flex gap-8" style="align-items:center"><div class="plot-cell occupied" style="width:20px;height:20px;aspect-ratio:auto">  </div><span class="text-xs">Occupied (52)</span></div>
+                  <div class="flex gap-8" style="align-items:center"><div class="plot-cell reserved" style="width:20px;height:20px;aspect-ratio:auto">  </div><span class="text-xs">Reserved (8)</span></div>
+                  <div class="flex gap-8" style="align-items:center"><div class="plot-cell pending" style="width:20px;height:20px;aspect-ratio:auto">  </div><span class="text-xs">Pending (6)</span></div>
+                </div>
+                <div class="plot-grid">
+                  <div class="plot-cell occupied">B1</div><div class="plot-cell occupied">B2</div><div class="plot-cell occupied">B3</div><div class="plot-cell occupied">B4</div><div class="plot-cell occupied">B5</div><div class="plot-cell available">B6</div><div class="plot-cell available">B7</div><div class="plot-cell reserved">B8</div><div class="plot-cell occupied">B9</div><div class="plot-cell occupied">B10</div>
+                  <div class="plot-cell occupied">B11</div><div class="plot-cell available">B12</div><div class="plot-cell occupied">B13</div><div class="plot-cell occupied">B14</div><div class="plot-cell reserved">B15</div><div class="plot-cell occupied">B16</div><div class="plot-cell available">B17</div><div class="plot-cell occupied">B18</div><div class="plot-cell occupied">B19</div><div class="plot-cell available">B20</div>
+                  <div class="plot-cell occupied">B21</div><div class="plot-cell occupied">B22</div><div class="plot-cell available">B23</div><div class="plot-cell available">B24</div><div class="plot-cell occupied">B25</div><div class="plot-cell occupied">B26</div><div class="plot-cell pending">B27</div><div class="plot-cell occupied">B28</div><div class="plot-cell available">B29</div><div class="plot-cell occupied">B30</div>
+                  <div class="plot-cell available">B31</div><div class="plot-cell occupied">B32</div><div class="plot-cell occupied">B33</div><div class="plot-cell reserved">B34</div><div class="plot-cell occupied">B35</div><div class="plot-cell available">B36</div><div class="plot-cell occupied">B37</div><div class="plot-cell occupied">B38</div><div class="plot-cell available">B39</div><div class="plot-cell occupied">B40</div>
+                  <div class="plot-cell occupied">B41</div><div class="plot-cell pending">B42</div><div class="plot-cell occupied">B43</div><div class="plot-cell available">B44</div><div class="plot-cell occupied">B45</div><div class="plot-cell reserved">B46</div><div class="plot-cell pending">B47</div><div class="plot-cell occupied">B48</div><div class="plot-cell occupied">B49</div><div class="plot-cell available">B50</div>
+                  <div class="plot-cell available">B51</div><div class="plot-cell available">B52</div><div class="plot-cell occupied">B53</div><div class="plot-cell occupied">B54</div><div class="plot-cell available">B55</div><div class="plot-cell occupied">B56</div><div class="plot-cell available">B57</div><div class="plot-cell reserved">B58</div><div class="plot-cell pending">B59</div><div class="plot-cell occupied">B60</div>
+                  <div class="plot-cell occupied">B61</div><div class="plot-cell available">B62</div><div class="plot-cell reserved">B63</div><div class="plot-cell occupied">B64</div><div class="plot-cell available">B65</div><div class="plot-cell occupied">B66</div><div class="plot-cell occupied">B67</div><div class="plot-cell available">B68</div><div class="plot-cell occupied">B69</div><div class="plot-cell available">B70</div>
+                  <div class="plot-cell available">B71</div><div class="plot-cell occupied">B72</div><div class="plot-cell occupied">B73</div><div class="plot-cell available">B74</div><div class="plot-cell reserved">B75</div><div class="plot-cell occupied">B76</div><div class="plot-cell available">B77</div><div class="plot-cell occupied">B78</div><div class="plot-cell pending">B79</div><div class="plot-cell occupied">B80</div>
+                  <div class="plot-cell occupied">B81</div><div class="plot-cell available">B82</div><div class="plot-cell occupied">B83</div><div class="plot-cell occupied">B84</div><div class="plot-cell available">B85</div><div class="plot-cell available">B86</div><div class="plot-cell occupied">B87</div><div class="plot-cell reserved">B88</div><div class="plot-cell occupied">B89</div><div class="plot-cell available">B90</div>
+                  <div class="plot-cell available">B91</div><div class="plot-cell occupied">B92</div><div class="plot-cell pending">B93</div><div class="plot-cell available">B94</div><div class="plot-cell occupied">B95</div><div class="plot-cell occupied">B96</div><div class="plot-cell available">B97</div><div class="plot-cell occupied">B98</div><div class="plot-cell available">B99</div><div class="plot-cell occupied">100</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card mb-16">
+              <div class="card-header"><h3>Upcoming Interments</h3></div>
+              <div class="card-body no-pad">
+                <div class="case-item">
+                  <div class="case-info">
+                    <div class="case-name">Thornton — Sec B, Plot 47</div>
+                    <div class="case-meta">Feb 28, 2:30 PM · Opening/closing needed</div>
+                  </div>
+                  <span class="badge badge-warning">Scheduled</span>
+                </div>
+                <div class="case-item">
+                  <div class="case-info">
+                    <div class="case-name">Callister — Sec D, Plot 14</div>
+                    <div class="case-meta">Feb 27, 3:30 PM · Ready</div>
+                  </div>
+                  <span class="badge badge-success">Ready</span>
+                </div>
+                <div class="case-item">
+                  <div class="case-info">
+                    <div class="case-name">Henderson — Sec A, Plot 92</div>
+                    <div class="case-meta">Mar 3, 1:00 PM · Pending vault</div>
+                  </div>
+                  <span class="badge badge-info">Pending</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>Cemetery Summary</h3></div>
+              <div class="card-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                  <div>
+                    <div class="text-xs text-muted">Total Plots</div>
+                    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--navy-900)">2,480</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted">Available</div>
+                    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--success-text)">412</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted">Occupied</div>
+                    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--stone-500)">1,894</div>
+                  </div>
+                  <div>
+                    <div class="text-xs text-muted">Reserved</div>
+                    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--info-text)">174</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== EVENTS / PAMPHLET PLANNING ========== -->
+      <div class="page" id="page-events">
+        <div class="tabs mb-24" id="eventTabs">
+          <div class="tab active" onclick="switchTab(this,'eventTabs')">Planning Queue</div>
+          <div class="tab" onclick="switchTab(this,'eventTabs')">Programs & Pamphlets</div>
+          <div class="tab" onclick="switchTab(this,'eventTabs')">Slideshows</div>
+        </div>
+
+        <div class="kanban">
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title" style="color:var(--warning-text)">📥 Incoming</div>
+              <span class="kanban-col-count">3</span>
+            </div>
+            <div class="kanban-card">
+              <div class="kc-title">Kimball Cremation Service</div>
+              <div class="kc-meta">Murray · Arrangements pending · No photos yet</div>
+              <div class="kc-footer">
+                <span class="badge badge-neutral">Awaiting Info</span>
+                <div class="kc-avatar">SJ</div>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kc-title">Matsuda Memorial Service</div>
+              <div class="kc-meta">Sandy · Obit submitted · Photos due Feb 28</div>
+              <div class="kc-footer">
+                <span class="badge badge-neutral">Awaiting Photos</span>
+                <div class="kc-avatar">MC</div>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kc-title">Henderson Graveside</div>
+              <div class="kc-meta">West Jordan · Simple program · 1 page</div>
+              <div class="kc-footer">
+                <span class="badge badge-info">Ready to Start</span>
+                <div class="kc-avatar">LP</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title" style="color:var(--info-text)">✏️ In Design</div>
+              <span class="kanban-col-count">2</span>
+            </div>
+            <div class="kanban-card">
+              <div class="kc-title">Wong Celebration of Life</div>
+              <div class="kc-meta">Holladay · 8-page booklet · Slideshow in progress</div>
+              <div class="kc-footer">
+                <span class="badge badge-info">Designing</span>
+                <div class="kc-avatar">AR</div>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kc-title">Thornton Traditional Service</div>
+              <div class="kc-meta">Sandy · 4-page program · 150 copies needed</div>
+              <div class="kc-footer">
+                <span class="badge badge-warning">Family Review</span>
+                <div class="kc-avatar">AR</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title" style="color:var(--purple-text)">👀 Review</div>
+              <span class="kanban-col-count">1</span>
+            </div>
+            <div class="kanban-card">
+              <div class="kc-title">Callister Funeral Program</div>
+              <div class="kc-meta">Bountiful · Director approved · Printing today</div>
+              <div class="kc-footer">
+                <span class="badge badge-purple">Approved</span>
+                <div class="kc-avatar">JD</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title" style="color:var(--success-text)">✅ Complete</div>
+              <span class="kanban-col-count">2</span>
+            </div>
+            <div class="kanban-card" style="opacity:0.7">
+              <div class="kc-title">Nakamura Direct Cremation</div>
+              <div class="kc-meta">Cottonwood · No program needed</div>
+              <div class="kc-footer">
+                <span class="badge badge-success">Done</span>
+                <div class="kc-avatar">SJ</div>
+              </div>
+            </div>
+            <div class="kanban-card" style="opacity:0.7">
+              <div class="kc-title">Reeves Celebration of Life</div>
+              <div class="kc-meta">Murray · 200 programs printed</div>
+              <div class="kc-footer">
+                <span class="badge badge-success">Done</span>
+                <div class="kc-avatar">AR</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== PRENEED ========== -->
+      <div class="page" id="page-preneed">
+        <div class="tabs mb-24" id="preneedTabs">
+          <div class="tab active" onclick="switchTab(this,'preneedTabs')">Active Contracts</div>
+          <div class="tab" onclick="switchTab(this,'preneedTabs')">Converted to At-Need</div>
+          <div class="tab" onclick="switchTab(this,'preneedTabs')">Unfunded</div>
+        </div>
+        <div class="flex-between mb-24">
+          <div class="search-bar" style="width:300px">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search contracts by name or number..." />
+          </div>
+          <button class="header-btn header-btn-fill">+ New Preneed Contract</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="preneed-card">
+            <div class="pn-header">
+              <div>
+                <div class="pn-name">Eleanor G. Whitfield</div>
+                <div class="pn-contract">PN-2023-0891 · Created Mar 12, 2023</div>
+              </div>
+              <span class="badge badge-success">Funded</span>
+            </div>
+            <div class="pn-details">
+              <div class="pn-detail"><div class="pn-label">Funding</div><div class="pn-value">Insurance — Forethought</div></div>
+              <div class="pn-detail"><div class="pn-label">Location</div><div class="pn-value">Sandy Mortuary</div></div>
+              <div class="pn-detail"><div class="pn-label">Preference</div><div class="pn-value">Traditional Burial</div></div>
+            </div>
+          </div>
+          <div class="preneed-card">
+            <div class="pn-header">
+              <div>
+                <div class="pn-name">Harold P. Stanton</div>
+                <div class="pn-contract">PN-2024-0102 · Created Jan 8, 2024</div>
+              </div>
+              <span class="badge badge-success">Funded</span>
+            </div>
+            <div class="pn-details">
+              <div class="pn-detail"><div class="pn-label">Funding</div><div class="pn-value">Trust — Precoa</div></div>
+              <div class="pn-detail"><div class="pn-label">Location</div><div class="pn-value">Murray Mortuary</div></div>
+              <div class="pn-detail"><div class="pn-label">Preference</div><div class="pn-value">Cremation w/ Memorial</div></div>
+            </div>
+          </div>
+          <div class="preneed-card">
+            <div class="pn-header">
+              <div>
+                <div class="pn-name">William T. Henderson</div>
+                <div class="pn-contract">PN-2022-0445 · Created Jun 15, 2022</div>
+              </div>
+              <span class="badge badge-info">Converting to At-Need</span>
+            </div>
+            <div class="pn-details">
+              <div class="pn-detail"><div class="pn-label">Funding</div><div class="pn-value">Insurance — CUNA Mutual</div></div>
+              <div class="pn-detail"><div class="pn-label">Location</div><div class="pn-value">West Jordan Mortuary</div></div>
+              <div class="pn-detail"><div class="pn-label">Preference</div><div class="pn-value">Graveside Service</div></div>
+            </div>
+          </div>
+          <div class="preneed-card">
+            <div class="pn-header">
+              <div>
+                <div class="pn-name">Ruth M. Lindqvist</div>
+                <div class="pn-contract">PN-2025-0034 · Created Feb 1, 2025</div>
+              </div>
+              <span class="badge badge-warning">Unfunded</span>
+            </div>
+            <div class="pn-details">
+              <div class="pn-detail"><div class="pn-label">Funding</div><div class="pn-value">Pending — family reviewing</div></div>
+              <div class="pn-detail"><div class="pn-label">Location</div><div class="pn-value">Cottonwood Heights</div></div>
+              <div class="pn-detail"><div class="pn-label">Preference</div><div class="pn-value">Celebration of Life</div></div>
+            </div>
+          </div>
+          <div class="preneed-card">
+            <div class="pn-header">
+              <div>
+                <div class="pn-name">James & Linda Petersen</div>
+                <div class="pn-contract">PN-2024-0267 · Created Aug 20, 2024 · Companion</div>
+              </div>
+              <span class="badge badge-success">Funded</span>
+            </div>
+            <div class="pn-details">
+              <div class="pn-detail"><div class="pn-label">Funding</div><div class="pn-value">Trust — Precoa (both)</div></div>
+              <div class="pn-detail"><div class="pn-label">Location</div><div class="pn-value">Holladay Mortuary</div></div>
+              <div class="pn-detail"><div class="pn-label">Preference</div><div class="pn-value">Side-by-side Burial</div></div>
+            </div>
+          </div>
+          <div class="preneed-card">
+            <div class="pn-header">
+              <div>
+                <div class="pn-name">Barbara K. Nishimura</div>
+                <div class="pn-contract">PN-2025-0089 · Created Nov 3, 2025</div>
+              </div>
+              <span class="badge badge-success">Funded</span>
+            </div>
+            <div class="pn-details">
+              <div class="pn-detail"><div class="pn-label">Funding</div><div class="pn-value">Insurance — Forethought</div></div>
+              <div class="pn-detail"><div class="pn-label">Location</div><div class="pn-value">Bountiful Mortuary</div></div>
+              <div class="pn-detail"><div class="pn-label">Preference</div><div class="pn-value">Traditional Burial</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== LOCATIONS ========== -->
+      <div class="page" id="page-locations">
+        <div class="tabs mb-24" id="locationTabs">
+          <div class="tab active" onclick="switchTab(this,'locationTabs')">All Locations</div>
+          <div class="tab" onclick="switchTab(this,'locationTabs')">Mortuaries</div>
+          <div class="tab" onclick="switchTab(this,'locationTabs')">Cemeteries</div>
+          <div class="tab" onclick="switchTab(this,'locationTabs')">Care Centers</div>
+          <div class="tab" onclick="switchTab(this,'locationTabs')">Crematories</div>
+        </div>
+        <div class="location-grid">
+          <div class="location-card" onclick="navigateTo('dashboard')">
+            <div class="loc-banner"><span class="loc-type">Mortuary</span></div>
+            <div class="loc-body">
+              <div class="loc-name">Sandy Mortuary</div>
+              <div class="loc-addr">1520 E 9400 S, Sandy, UT 84093</div>
+              <div class="loc-stats">
+                <div class="loc-stat"><div class="ls-num">12</div><div class="ls-label">Active Cases</div></div>
+                <div class="loc-stat"><div class="ls-num">3</div><div class="ls-label">Directors</div></div>
+                <div class="loc-stat"><div class="ls-num">1</div><div class="ls-label">Chapel</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="location-card">
+            <div class="loc-banner" style="background:linear-gradient(135deg,#2B4C6F,#4A7BAA)"><span class="loc-type">Mortuary</span></div>
+            <div class="loc-body">
+              <div class="loc-name">Murray Mortuary</div>
+              <div class="loc-addr">5850 S 900 E, Murray, UT 84121</div>
+              <div class="loc-stats">
+                <div class="loc-stat"><div class="ls-num">9</div><div class="ls-label">Active Cases</div></div>
+                <div class="loc-stat"><div class="ls-num">2</div><div class="ls-label">Directors</div></div>
+                <div class="loc-stat"><div class="ls-num">1</div><div class="ls-label">Chapel</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="location-card">
+            <div class="loc-banner" style="background:linear-gradient(135deg,#213751,#36608A)"><span class="loc-type">Mortuary</span></div>
+            <div class="loc-body">
+              <div class="loc-name">Cottonwood Heights Mortuary</div>
+              <div class="loc-addr">4670 S Highland Dr, SLC, UT 84117</div>
+              <div class="loc-stats">
+                <div class="loc-stat"><div class="ls-num">8</div><div class="ls-label">Active Cases</div></div>
+                <div class="loc-stat"><div class="ls-num">2</div><div class="ls-label">Directors</div></div>
+                <div class="loc-stat"><div class="ls-num">1</div><div class="ls-label">Chapel</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="location-card">
+            <div class="loc-banner" style="background:linear-gradient(135deg,#3D6B3D,#5A9B5A)"><span class="loc-type">Cemetery</span></div>
+            <div class="loc-body">
+              <div class="loc-name">Memorial Gardens Cemetery</div>
+              <div class="loc-addr">Adjacent to Sandy Mortuary</div>
+              <div class="loc-stats">
+                <div class="loc-stat"><div class="ls-num">2,480</div><div class="ls-label">Total Plots</div></div>
+                <div class="loc-stat"><div class="ls-num">412</div><div class="ls-label">Available</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="location-card">
+            <div class="loc-banner" style="background:linear-gradient(135deg,#3D6B3D,#5A9B5A)"><span class="loc-type">Cemetery</span></div>
+            <div class="loc-body">
+              <div class="loc-name">Valley View Cemetery</div>
+              <div class="loc-addr">4400 W 7800 S, West Jordan, UT</div>
+              <div class="loc-stats">
+                <div class="loc-stat"><div class="ls-num">1,850</div><div class="ls-label">Total Plots</div></div>
+                <div class="loc-stat"><div class="ls-num">298</div><div class="ls-label">Available</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="location-card">
+            <div class="loc-banner" style="background:linear-gradient(135deg,#6B4C3D,#9B7A5A)"><span class="loc-type">Care Center</span></div>
+            <div class="loc-body">
+              <div class="loc-name">Central Care Center</div>
+              <div class="loc-addr">Shared facility — Murray location</div>
+              <div class="loc-stats">
+                <div class="loc-stat"><div class="ls-num">4</div><div class="ls-label">Prep Rooms</div></div>
+                <div class="loc-stat"><div class="ls-num">12</div><div class="ls-label">Cooler Cap.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== FAMILY PORTAL ========== -->
+      <div class="page" id="page-family">
+        <div class="portal-header">
+          <p style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;color:var(--navy-400)">Memorial Mortuaries & Cemeteries</p>
+          <h2>In Loving Memory of Margaret Ann Thornton</h2>
+          <p>April 12, 1941 — February 24, 2026</p>
+        </div>
+
+        <div class="portal-cards">
+          <div class="portal-card">
+            <div class="pc-icon" style="background:var(--info-bg);color:var(--info-text)">📅</div>
+            <h4>Service Schedule</h4>
+            <p>View visitation, funeral service, and graveside details including times, locations, and directions.</p>
+            <div style="margin-top:14px">
+              <div style="font-size:12px;margin-bottom:6px"><strong>Visitation:</strong> Feb 27, 2:00–4:00 PM</div>
+              <div style="font-size:12px;margin-bottom:6px"><strong>Funeral:</strong> Feb 28, 11:00 AM</div>
+              <div style="font-size:12px"><strong>Graveside:</strong> Feb 28, 2:30 PM</div>
+            </div>
+          </div>
+          <div class="portal-card">
+            <div class="pc-icon" style="background:var(--purple-bg);color:var(--purple-text)">📸</div>
+            <h4>Photos & Memories</h4>
+            <p>Upload photos for the memorial program and slideshow. Share cherished memories with the family.</p>
+            <div style="margin-top:14px">
+              <div style="font-size:12px;color:var(--success-text);font-weight:600">12 photos uploaded</div>
+              <button class="header-btn header-btn-outline" style="margin-top:8px;width:100%;justify-content:center">+ Upload Photos</button>
+            </div>
+          </div>
+          <div class="portal-card">
+            <div class="pc-icon" style="background:var(--warning-bg);color:var(--warning-text)">📋</div>
+            <h4>Obituary Review</h4>
+            <p>Review the draft obituary and suggest edits before publication. Your input helps us honor the story.</p>
+            <div style="margin-top:14px">
+              <span class="badge badge-warning">Pending Your Review</span>
+              <button class="header-btn header-btn-fill" style="margin-top:8px;width:100%;justify-content:center">Review Obituary</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:24px">
+          <div class="card">
+            <div class="card-header"><h3>Message Your Funeral Director</h3></div>
+            <div class="card-body">
+              <div style="display:flex;gap:12px;margin-bottom:16px;padding:12px;background:var(--stone-50);border-radius:var(--radius-md)">
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--navy-600);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">JD</div>
+                <div>
+                  <div style="font-weight:600;font-size:13px;color:var(--navy-900)">James Donovan</div>
+                  <div style="font-size:12px;color:var(--stone-500);margin-top:4px">Thank you for the photos, David. We've incorporated them into the program draft. Please take a look at the obituary when you have a moment — we want to make sure everything reads just right.</div>
+                  <div style="font-size:10px;color:var(--stone-400);margin-top:4px">Today at 10:42 AM</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:10px">
+                <input type="text" placeholder="Type a message..." style="flex:1;padding:10px 14px;border:1.5px solid var(--stone-200);border-radius:var(--radius-md);outline:none;font-size:13px">
+                <button class="header-btn header-btn-fill">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end page-content -->
+  </div><!-- end main-content -->
+</div><!-- end app -->
+
+<!-- ==================== NEW CASE MODAL ==================== -->
+<div class="modal-overlay" id="newCaseModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Create New Case</h3>
+      <button class="modal-close" onclick="closeModal('newCaseModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section">
+        <div class="form-section-title">Quick Case Entry</div>
+        <div class="form-section-desc">Enter minimum required information to create a case. Full details can be added later.</div>
+        <hr class="form-section-divider">
+        <div class="form-grid">
+          <div class="form-group"><label>Decedent First Name</label><input type="text" placeholder="First name"></div>
+          <div class="form-group"><label>Decedent Last Name</label><input type="text" placeholder="Last name"></div>
+          <div class="form-group"><label>Date of Death</label><input type="date"></div>
+          <div class="form-group"><label>Assigned Location</label>
+            <select><option>Sandy Mortuary</option><option>Murray Mortuary</option><option>Cottonwood Heights</option><option>Holladay</option><option>West Jordan</option><option>Bountiful</option></select>
+          </div>
+          <div class="form-group"><label>Service Type</label>
+            <select><option>Traditional Burial</option><option>Cremation</option><option>Direct Cremation</option><option>Memorial Service</option><option>Graveside</option><option>Celebration of Life</option><option>Unknown</option></select>
+          </div>
+          <div class="form-group"><label>Assigned Director</label>
+            <select><option>Auto-assign</option><option>James Donovan</option><option>Sarah Jensen</option><option>Michael Chen</option><option>Lisa Park</option></select>
+          </div>
+          <div class="form-group form-full"><label>Source</label>
+            <select><option>First Call (At-Need)</option><option>Preneed Conversion</option><option>Hospital/Facility Referral</option><option>Transfer from Another Funeral Home</option></select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="header-btn header-btn-outline" onclick="closeModal('newCaseModal')">Cancel</button>
+      <button class="header-btn header-btn-fill" onclick="closeModal('newCaseModal');navigateTo('case-detail')">Create Case</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== STATE ====================
+let currentRole = 'admin';
+let currentPage = 'dashboard';
+
+// ==================== ROLE CONFIG ====================
+const roleConfig = {
+  admin: {
+    name: 'James Donovan',
+    title: 'Operations Manager',
+    initials: 'JD',
+    nav: [
+      { section: 'Overview', items: [
+        { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+      ]},
+      { section: 'Case Management', items: [
+        { id: 'cases', label: 'All Cases', icon: '📂', badge: '47' },
+        { id: 'intake', label: 'First Call / Intake', icon: '📞', badge: '2', urgent: true },
+        { id: 'preneed', label: 'Preneed Contracts', icon: '📝' },
+      ]},
+      { section: 'Operations', items: [
+        { id: 'schedule', label: 'Resource Schedule', icon: '📅' },
+        { id: 'events', label: 'Event Planning', icon: '🎨', badge: '5' },
+        { id: 'cemetery', label: 'Cemetery Ops', icon: '🌿' },
+      ]},
+      { section: 'Administration', items: [
+        { id: 'locations', label: 'Locations', icon: '🏢' },
+        { id: 'family', label: 'Family Portal Preview', icon: '💐' },
+      ]},
+    ]
+  },
+  director: {
+    name: 'Sarah Jensen',
+    title: 'Funeral Director · Murray',
+    initials: 'SJ',
+    nav: [
+      { section: 'My Work', items: [
+        { id: 'dashboard', label: 'My Caseload', icon: '📊' },
+        { id: 'cases', label: 'My Cases', icon: '📂', badge: '9' },
+        { id: 'intake', label: 'New Arrangement', icon: '📝' },
+      ]},
+      { section: 'Coordination', items: [
+        { id: 'schedule', label: 'Schedule', icon: '📅' },
+        { id: 'events', label: 'Event Requests', icon: '🎨', badge: '2' },
+        { id: 'preneed', label: 'Preneed Lookup', icon: '🔍' },
+      ]},
+    ]
+  },
+  intake: {
+    name: 'Rachel Torres',
+    title: 'Intake Agent',
+    initials: 'RT',
+    nav: [
+      { section: 'Intake', items: [
+        { id: 'intake', label: 'New First Call', icon: '📞' },
+        { id: 'cases', label: 'Recent Cases', icon: '📂', badge: '3' },
+        { id: 'preneed', label: 'Preneed Lookup', icon: '🔍' },
+      ]},
+      { section: 'Dispatch', items: [
+        { id: 'schedule', label: 'Vehicle Dispatch', icon: '🚐' },
+      ]},
+    ]
+  },
+  burial: {
+    name: 'Tom Bradley',
+    title: 'Burial Director',
+    initials: 'TB',
+    nav: [
+      { section: 'Cemetery', items: [
+        { id: 'cemetery', label: 'Plot Inventory', icon: '🌿' },
+        { id: 'schedule', label: 'Interment Schedule', icon: '📅', badge: '3' },
+        { id: 'dashboard', label: 'Overview', icon: '📊' },
+      ]},
+      { section: 'Records', items: [
+        { id: 'locations', label: 'Cemetery Locations', icon: '🏢' },
+      ]},
+    ]
+  },
+  planner: {
+    name: 'Amy Rodriguez',
+    title: 'Event Planner',
+    initials: 'AR',
+    nav: [
+      { section: 'Planning', items: [
+        { id: 'events', label: 'Planning Queue', icon: '🎨', badge: '5' },
+        { id: 'cases', label: 'Active Cases', icon: '📂' },
+        { id: 'schedule', label: 'Venue Schedule', icon: '📅' },
+      ]},
+    ]
+  },
+  family: {
+    name: 'David Thornton',
+    title: 'Family Member',
+    initials: 'DT',
+    nav: [
+      { section: 'Portal', items: [
+        { id: 'family', label: 'Service Details', icon: '💐' },
+      ]},
+    ]
+  }
+};
+
+// ==================== LOGIN ====================
+function selectRole(el) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  currentRole = el.dataset.role;
+}
+
+function doLogin() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app').classList.add('active');
+  setupRole();
+  const firstPage = currentRole === 'family' ? 'family' : 
+                     currentRole === 'intake' ? 'intake' :
+                     currentRole === 'burial' ? 'cemetery' : 'dashboard';
+  navigateTo(firstPage);
+}
+
+function doLogout() {
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+
+// ==================== ROLE SETUP ====================
+function setupRole() {
+  const config = roleConfig[currentRole];
+  document.getElementById('sidebarAvatar').textContent = config.initials;
+  document.getElementById('sidebarRoleName').textContent = config.name;
+  document.getElementById('sidebarRoleLoc').textContent = config.title;
+
+  const nav = document.getElementById('sidebarNav');
+  nav.innerHTML = '';
+  config.nav.forEach(section => {
+    const sectionEl = document.createElement('div');
+    sectionEl.className = 'nav-section';
+    sectionEl.innerHTML = `<div class="nav-section-title">${section.section}</div>`;
+    section.items.forEach(item => {
+      const navItem = document.createElement('div');
+      navItem.className = 'nav-item';
+      navItem.setAttribute('data-page', item.id);
+      navItem.onclick = () => navigateTo(item.id);
+      navItem.innerHTML = `
+        <span class="nav-icon">${item.icon}</span>
+        <span>${item.label}</span>
+        ${item.badge ? `<span class="nav-badge ${item.urgent ? 'urgent' : ''}">${item.badge}</span>` : ''}
+      `;
+      sectionEl.appendChild(navItem);
+    });
+    nav.appendChild(sectionEl);
+  });
+}
+
+// ==================== NAVIGATION ====================
+function navigateTo(pageId) {
+  currentPage = pageId;
+  // Update pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.classList.add('active');
+
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll(`.nav-item[data-page="${pageId}"]`).forEach(n => n.classList.add('active'));
+
+  // Update header
+  const titles = {
+    'dashboard': 'Dashboard',
+    'cases': 'Case Management',
+    'case-detail': 'Case Detail',
+    'intake': 'First Call / Intake',
+    'schedule': 'Resource Schedule',
+    'cemetery': 'Cemetery Operations',
+    'events': 'Event Planning',
+    'preneed': 'Preneed Contracts',
+    'locations': 'Locations',
+    'family': 'Family Portal'
+  };
+  document.getElementById('pageTitle').textContent = titles[pageId] || 'Dashboard';
+}
+
+// ==================== TABS ====================
+function switchTab(el, groupId) {
+  const group = el.parentElement;
+  group.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ==================== MODALS ====================
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+});
+</script>
+
+</body>
+</html>
