@@ -529,6 +529,180 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: 
 .schedule-event.ev-orange { background: var(--warning-bg); color: var(--warning-text); border-left: 2.5px solid var(--warning-text); }
 .schedule-event.ev-purple { background: var(--purple-bg); color: var(--purple-text); border-left: 2.5px solid var(--purple-text); }
 
+/* ==================== CONFLICT INDICATOR ==================== */
+.schedule-event.conflict {
+  border: 2px solid var(--danger-text) !important; border-left: 3px solid var(--danger-text) !important;
+  position: relative; animation: conflict-pulse 2s ease-in-out infinite;
+}
+.schedule-event.conflict::after {
+  content: '⚠'; position: absolute; top: -6px; right: -4px; font-size: 11px;
+  background: var(--danger-text); color: white; width: 16px; height: 16px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+@keyframes conflict-pulse { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 8px rgba(220,38,38,.3)} }
+
+/* ==================== PHASE LABEL ==================== */
+.phase-label {
+  font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+  color: var(--stone-500); margin-bottom: 1px;
+}
+
+/* ==================== TOAST NOTIFICATION ==================== */
+.toast {
+  position: fixed; bottom: 28px; right: 28px; z-index: 3000;
+  background: var(--navy-900); color: white;
+  padding: 14px 22px; border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg); font-size: 13px; font-weight: 500;
+  transform: translateY(100px); opacity: 0;
+  transition: all .35s cubic-bezier(.4,0,.2,1);
+  display: flex; align-items: center; gap: 10px; max-width: 420px;
+}
+.toast.visible { transform: translateY(0); opacity: 1; }
+.toast .toast-icon { font-size: 16px; }
+
+/* ==================== BOOKING POPOVER ==================== */
+.popover {
+  position: fixed; z-index: 2000; background: var(--white);
+  border-radius: var(--radius-lg); box-shadow: 0 12px 40px rgba(0,0,0,.18);
+  border: 1px solid var(--stone-200); width: 320px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease;
+}
+.popover.active { opacity: 1; pointer-events: all; }
+.popover-header {
+  padding: 14px 16px 10px; border-bottom: 1px solid var(--stone-100);
+  display: flex; align-items: flex-start; justify-content: space-between;
+}
+.popover-header h4 { font-family: 'Cormorant Garamond',serif; font-size: 16px; font-weight: 700; color: var(--navy-900); margin: 0; }
+.popover-close { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--stone-400); padding: 0; line-height: 1; }
+.popover-close:hover { color: var(--navy-900); }
+.popover-body { padding: 12px 16px; }
+.popover-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; }
+.popover-row .pop-label { color: var(--stone-500); font-weight: 500; }
+.popover-row .pop-value { color: var(--navy-900); font-weight: 600; }
+.popover-footer { padding: 10px 16px 14px; border-top: 1px solid var(--stone-100); display: flex; gap: 8px; }
+.popover-footer button { flex: 1; }
+.popover-warn { background: var(--warning-bg); color: var(--warning-text); padding: 8px 10px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 500; margin-bottom: 10px; }
+
+/* ==================== AVAILABILITY FILTER BAR ==================== */
+.availability-bar {
+  display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+  background: var(--stone-50); border: 1px solid var(--stone-200);
+  border-radius: var(--radius-md); margin-bottom: 16px; flex-wrap: wrap;
+}
+.availability-bar label { font-size: 11px; font-weight: 600; color: var(--stone-500); text-transform: uppercase; letter-spacing: .5px; }
+.availability-bar .filter-group { display: flex; flex-direction: column; gap: 3px; }
+.availability-bar input, .availability-bar select {
+  padding: 6px 10px; border: 1px solid var(--stone-200); border-radius: var(--radius-sm);
+  font-size: 12px; font-family: 'DM Sans',sans-serif; background: white;
+}
+
+/* ==================== AVAILABILITY RESULTS ==================== */
+.availability-results {
+  background: white; border: 1px solid var(--stone-200); border-radius: var(--radius-lg);
+  margin-bottom: 16px; overflow: hidden;
+}
+.avail-results-header {
+  padding: 14px 18px; background: var(--navy-50); border-bottom: 1px solid var(--stone-200);
+  font-size: 13px; font-weight: 600; color: var(--navy-900);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.avail-group-title {
+  padding: 10px 18px 6px; font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .8px; color: var(--stone-500); border-top: 1px solid var(--stone-100);
+}
+.avail-group-title:first-of-type { border-top: none; }
+.avail-item {
+  display: flex; align-items: center; padding: 8px 18px; gap: 12px;
+  border-bottom: 1px solid var(--stone-50); font-size: 12px;
+  transition: var(--transition);
+}
+.avail-item:hover { background: var(--stone-50); }
+.avail-item .avail-icon { font-size: 16px; width: 24px; text-align: center; }
+.avail-item .avail-name { font-weight: 600; color: var(--navy-900); min-width: 120px; }
+.avail-item .avail-location { color: var(--stone-500); font-size: 11px; flex: 1; }
+.avail-item .avail-conflict { color: var(--stone-400); font-size: 11px; font-style: italic; flex: 1; }
+.avail-item .avail-status { margin-left: auto; }
+
+/* ==================== RESOURCE PLANNER MODAL ==================== */
+.planner-modal .modal { max-width: 820px; width: 95vw; }
+.planner-case-header {
+  display: flex; align-items: center; gap: 16px; padding: 16px 0 12px;
+  border-bottom: 1px solid var(--stone-100); margin-bottom: 16px;
+}
+.planner-case-header .case-badge {
+  font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: var(--radius-sm);
+  background: var(--navy-100); color: var(--navy-700);
+}
+.planner-case-header h3 {
+  font-family: 'Cormorant Garamond',serif; font-size: 20px; font-weight: 700; color: var(--navy-900); margin: 0;
+}
+.planner-case-header .case-meta { font-size: 11px; color: var(--stone-500); }
+.planner-progress {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+  font-size: 12px; color: var(--stone-600);
+}
+.planner-progress-bar {
+  flex: 1; height: 6px; background: var(--stone-100); border-radius: 3px; overflow: hidden;
+}
+.planner-progress-fill { height: 100%; background: var(--success-text); border-radius: 3px; transition: width .3s ease; }
+
+/* Resource needs table */
+.planner-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.planner-table th {
+  text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .5px; color: var(--stone-500);
+  background: var(--stone-50); border-bottom: 1px solid var(--stone-200);
+}
+.planner-table td {
+  padding: 10px 12px; border-bottom: 1px solid var(--stone-100);
+  font-size: 12px; vertical-align: middle;
+}
+.planner-table tr:hover td { background: var(--navy-50); }
+.planner-table select, .planner-table input {
+  padding: 5px 8px; border: 1px solid var(--stone-200); border-radius: var(--radius-sm);
+  font-size: 12px; font-family: 'DM Sans',sans-serif; background: white; width: 100%;
+}
+.planner-table select:focus, .planner-table input:focus { border-color: var(--navy-400); outline: none; }
+.planner-status-booked { color: var(--success-text); font-weight: 600; font-size: 11px; }
+.planner-status-needed { color: var(--warning-text); font-weight: 600; font-size: 11px; }
+.planner-status-conflict { color: var(--danger-text); font-weight: 600; font-size: 11px; }
+.planner-table select option.unavailable { color: var(--stone-400); }
+
+/* Quick reserve toggle */
+.planner-toggle {
+  display: flex; gap: 0; margin-bottom: 16px; border: 1px solid var(--stone-200); border-radius: var(--radius-md); overflow: hidden;
+}
+.planner-toggle button {
+  flex: 1; padding: 8px 16px; border: none; background: white; cursor: pointer;
+  font-size: 12px; font-weight: 600; color: var(--stone-500); transition: var(--transition);
+}
+.planner-toggle button.active { background: var(--navy-700); color: white; }
+
+/* Quick reserve single-resource form */
+.quick-reserve { display: none; }
+.quick-reserve.active { display: block; }
+.case-planner-view { display: none; }
+.case-planner-view.active { display: block; }
+
+/* ==================== SCHEDULED RESOURCES CARD (Case Detail) ==================== */
+.sched-resource-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--stone-50); font-size: 12px;
+}
+.sched-resource-item:last-child { border-bottom: none; }
+.sched-resource-item .sri-check { font-size: 14px; width: 20px; text-align: center; }
+.sched-resource-item .sri-phase { font-weight: 600; color: var(--navy-800); min-width: 90px; font-size: 11px; }
+.sched-resource-item .sri-resource { display: flex; align-items: center; gap: 4px; color: var(--navy-700); min-width: 110px; }
+.sched-resource-item .sri-datetime { color: var(--stone-500); flex: 1; font-size: 11px; }
+.sched-resource-item .sri-action {
+  font-size: 11px; font-weight: 600; color: var(--navy-600); cursor: pointer;
+  background: none; border: none; padding: 2px 6px;
+}
+.sched-resource-item .sri-action:hover { color: var(--navy-900); text-decoration: underline; }
+.sched-resource-item.unbooked .sri-resource { color: var(--stone-400); font-style: italic; }
+
 /* ==================== CEMETERY MAP PLACEHOLDER ==================== */
 .map-placeholder {
   background: var(--stone-100); border-radius: var(--radius-lg);
@@ -683,6 +857,7 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: 
 .gap-8 { gap: 8px; }
 .gap-12 { gap: 12px; }
 .gap-16 { gap: 16px; }
+.mt-16 { margin-top: 16px; }
 .mt-20 { margin-top: 20px; }
 .mb-16 { margin-bottom: 16px; }
 .mb-24 { margin-bottom: 24px; }
@@ -967,7 +1142,7 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: 
                 <div class="timeline-dot purple">⛪</div>
                 <div class="timeline-content">
                   <div class="tl-title">Visitation — Thornton Service</div>
-                  <div class="tl-desc">Sandy Mortuary Chapel · Setup at 1:00 PM</div>
+                  <div class="tl-desc">Sandy Mortuary Venue · Setup at 1:00 PM</div>
                   <div class="tl-time">2:00 PM — 4:00 PM</div>
                 </div>
               </div>
@@ -1231,7 +1406,7 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: 
                   </div>
                   <div>
                     <div class="text-xs text-muted" style="margin-bottom:2px">Location</div>
-                    <div style="font-weight:600;color:var(--navy-900)">Sandy Mortuary Chapel</div>
+                    <div style="font-weight:600;color:var(--navy-900)">Sandy Mortuary Venue</div>
                   </div>
                   <div>
                     <div class="text-xs text-muted" style="margin-bottom:2px">Visitation</div>
@@ -1369,6 +1544,11 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: 
                 </div>
               </div>
             </div>
+
+            <!-- Scheduled Resources (dynamic) -->
+            <div class="card mt-16" id="caseScheduledResources">
+              <!-- Populated by renderCaseResources() -->
+            </div>
           </div>
         </div>
       </div>
@@ -1489,95 +1669,56 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: 
       <!-- ========== SCHEDULE / RESOURCES ========== -->
       <div class="page" id="page-schedule">
         <div class="tabs mb-24" id="scheduleTabs">
-          <div class="tab active" onclick="switchTab(this,'scheduleTabs')">Resource Calendar</div>
-          <div class="tab" onclick="switchTab(this,'scheduleTabs')">Vehicles</div>
-          <div class="tab" onclick="switchTab(this,'scheduleTabs')">Venues & Chapels</div>
-          <div class="tab" onclick="switchTab(this,'scheduleTabs')">Care Centers</div>
+          <div class="tab active" onclick="scheduleTabSwitch(this, null)">Resource Calendar</div>
+          <div class="tab" onclick="scheduleTabSwitch(this, 'vehicle')">Vehicles</div>
+          <div class="tab" onclick="scheduleTabSwitch(this, 'venue')">Venues</div>
+          <div class="tab" onclick="scheduleTabSwitch(this, 'care-center')">Care Centers</div>
         </div>
 
         <div class="calendar-header">
           <div class="calendar-nav">
-            <button>◀</button>
-            <div class="cal-month">February 2026</div>
-            <button>▶</button>
+            <button onclick="shiftWeek(-1)">◀</button>
+            <div class="cal-month" id="calMonthLabel">February 2026</div>
+            <button onclick="shiftWeek(1)">▶</button>
           </div>
           <div class="flex gap-8">
-            <button class="header-btn header-btn-outline">Today</button>
-            <button class="header-btn header-btn-fill">+ Reserve Resource</button>
+            <button class="header-btn header-btn-outline" onclick="goToday()">Today</button>
+            <button class="header-btn header-btn-fill" onclick="openResourcePlanner()">+ Reserve Resource</button>
           </div>
         </div>
 
-        <div class="schedule-grid">
-          <!-- Header Row -->
-          <div class="schedule-header-cell"></div>
-          <div class="schedule-header-cell">Mon<div class="day-num">24</div></div>
-          <div class="schedule-header-cell">Tue<div class="day-num">25</div></div>
-          <div class="schedule-header-cell">Wed<div class="day-num">26</div></div>
-          <div class="schedule-header-cell today">Thu<div class="day-num">27</div></div>
-          <div class="schedule-header-cell">Fri<div class="day-num">28</div></div>
-          <div class="schedule-header-cell">Sat<div class="day-num">1</div></div>
-          <div class="schedule-header-cell">Sun<div class="day-num">2</div></div>
-
-          <!-- Hearse #1 -->
-          <div class="schedule-resource"><span class="res-icon">🚗</span> Hearse #1</div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"><div class="schedule-event ev-blue">Nakamura Transport</div></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"><div class="schedule-event ev-purple">Thornton Service</div></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"><div class="schedule-event ev-blue">Wong Service</div></div>
-
-          <!-- Hearse #2 -->
-          <div class="schedule-resource"><span class="res-icon">🚗</span> Hearse #2</div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"><div class="schedule-event ev-green">Available</div></div>
-          <div class="schedule-cell"><div class="schedule-event ev-orange">Kimball Removal</div></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-
-          <!-- Sandy Chapel -->
-          <div class="schedule-resource"><span class="res-icon">⛪</span> Sandy Chapel</div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"><div class="schedule-event ev-purple">Thornton Visit.</div></div>
-          <div class="schedule-cell"><div class="schedule-event ev-purple">Thornton Funeral</div></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-
-          <!-- Murray Chapel -->
-          <div class="schedule-resource"><span class="res-icon">⛪</span> Murray Chapel</div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"><div class="schedule-event ev-orange">Kimball Conf.</div></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-
-          <!-- Limo #1 -->
-          <div class="schedule-resource"><span class="res-icon">🚙</span> Limo #1</div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"><div class="schedule-event ev-purple">Thornton Family</div></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-
-          <!-- Van #3 -->
-          <div class="schedule-resource"><span class="res-icon">🚐</span> Van #3</div>
-          <div class="schedule-cell"><div class="schedule-event ev-blue">Removal</div></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"><div class="schedule-event ev-blue">Removal</div></div>
-          <div class="schedule-cell"><div class="schedule-event ev-blue">Removal — St. Mark's</div></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
-          <div class="schedule-cell"></div>
+        <!-- Availability Filter Bar -->
+        <div class="availability-bar" id="availabilityBar">
+          <div class="filter-group">
+            <label>Date</label>
+            <input type="date" id="availDate" value="2026-02-28">
+          </div>
+          <div class="filter-group">
+            <label>Start Time</label>
+            <select id="availStartTime"></select>
+          </div>
+          <div class="filter-group">
+            <label>End Time</label>
+            <select id="availEndTime"></select>
+          </div>
+          <div class="filter-group">
+            <label>Resource Type</label>
+            <select id="availType">
+              <option value="">All Types</option>
+              <option value="vehicle">Vehicles</option>
+              <option value="venue">Venues</option>
+              <option value="care-center">Care Center</option>
+            </select>
+          </div>
+          <button class="header-btn header-btn-fill" onclick="checkAvailability()" style="align-self:flex-end">Check Availability</button>
+          <button class="header-btn header-btn-outline" onclick="clearAvailability()" style="align-self:flex-end">Clear</button>
         </div>
+
+        <!-- Availability Results (hidden by default) -->
+        <div id="availabilityResults" style="display:none"></div>
+
+        <!-- Dynamic Calendar Grid -->
+        <div class="schedule-grid" id="scheduleGridContainer"></div>
       </div>
 
       <!-- ========== CEMETERY / BURIAL ========== -->
@@ -1910,7 +2051,7 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: 
               <div class="loc-stats">
                 <div class="loc-stat"><div class="ls-num">12</div><div class="ls-label">Active Cases</div></div>
                 <div class="loc-stat"><div class="ls-num">3</div><div class="ls-label">Directors</div></div>
-                <div class="loc-stat"><div class="ls-num">1</div><div class="ls-label">Chapel</div></div>
+                <div class="loc-stat"><div class="ls-num">1</div><div class="ls-label">Venue</div></div>
               </div>
             </div>
           </div>
@@ -1922,7 +2063,7 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: 
               <div class="loc-stats">
                 <div class="loc-stat"><div class="ls-num">9</div><div class="ls-label">Active Cases</div></div>
                 <div class="loc-stat"><div class="ls-num">2</div><div class="ls-label">Directors</div></div>
-                <div class="loc-stat"><div class="ls-num">1</div><div class="ls-label">Chapel</div></div>
+                <div class="loc-stat"><div class="ls-num">1</div><div class="ls-label">Venue</div></div>
               </div>
             </div>
           </div>
@@ -1934,7 +2075,7 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: 
               <div class="loc-stats">
                 <div class="loc-stat"><div class="ls-num">8</div><div class="ls-label">Active Cases</div></div>
                 <div class="loc-stat"><div class="ls-num">2</div><div class="ls-label">Directors</div></div>
-                <div class="loc-stat"><div class="ls-num">1</div><div class="ls-label">Chapel</div></div>
+                <div class="loc-stat"><div class="ls-num">1</div><div class="ls-label">Venue</div></div>
               </div>
             </div>
           </div>
@@ -2076,10 +2217,109 @@ h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; color: 
   </div>
 </div>
 
+<!-- ==================== RESOURCE PLANNER MODAL ==================== -->
+<div class="modal-overlay planner-modal" id="resourcePlannerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Resource Scheduling</h3>
+      <button class="modal-close" onclick="closeModal('resourcePlannerModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Toggle: Case Planner vs Quick Reserve -->
+      <div class="planner-toggle">
+        <button id="plannerTogglePlanner" class="active" onclick="switchPlannerMode('planner')">Case Resource Planner</button>
+        <button id="plannerToggleQuick" onclick="switchPlannerMode('quick')">Quick Reserve</button>
+      </div>
+
+      <!-- Case Planner View -->
+      <div class="case-planner-view active" id="casePlannerView"></div>
+
+      <!-- Quick Reserve View -->
+      <div class="quick-reserve" id="quickReserveView"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ==================== STATE ====================
 let currentRole = 'admin';
 let currentPage = 'dashboard';
+let currentWeekStart = new Date(2026, 1, 24); // Monday Feb 24, 2026
+let nextBookingId = 12;
+
+// ==================== RESOURCE DATA ====================
+const resources = [
+  { id: 'hearse-1',  name: 'Hearse #1',  type: 'vehicle', subtype: 'hearse', location: 'Sandy',    status: 'available', icon: '🚗' },
+  { id: 'hearse-2',  name: 'Hearse #2',  type: 'vehicle', subtype: 'hearse', location: 'Murray',   status: 'available', icon: '🚗' },
+  { id: 'van-3',     name: 'Van #3',     type: 'vehicle', subtype: 'van',    location: 'Sandy',    status: 'available', icon: '🚐' },
+  { id: 'van-4',     name: 'Van #4',     type: 'vehicle', subtype: 'van',    location: 'Murray',   status: 'maintenance', icon: '🚐' },
+  { id: 'limo-1',    name: 'Limo #1',    type: 'vehicle', subtype: 'limo',   location: 'Holladay', status: 'available', icon: '🚙' },
+  { id: 'sandy-venue',  name: 'Sandy Venue',  type: 'venue', location: 'Sandy',  status: 'available', icon: '⛪' },
+  { id: 'murray-venue', name: 'Murray Venue', type: 'venue', location: 'Murray', status: 'available', icon: '⛪' },
+  { id: 'prep-room-1', name: 'Prep Room 1', type: 'care-center', location: 'Central', status: 'available', icon: '🏥' },
+  { id: 'prep-room-2', name: 'Prep Room 2', type: 'care-center', location: 'Central', status: 'available', icon: '🏥' },
+  { id: 'prep-room-3', name: 'Prep Room 3', type: 'care-center', location: 'Central', status: 'available', icon: '🏥' },
+  { id: 'prep-room-4', name: 'Prep Room 4', type: 'care-center', location: 'Central', status: 'available', icon: '🏥' },
+];
+
+const cases = [
+  { id: 'MC-2026-0284', name: 'Margaret A. Thornton', status: 'urgent',      serviceType: 'Traditional Burial',  serviceDate: '2026-02-28', location: 'Sandy' },
+  { id: 'MC-2026-0283', name: 'Robert J. Kimball',    status: 'arranging',   serviceType: 'Cremation',           serviceDate: null,         location: 'Murray' },
+  { id: 'MC-2026-0282', name: 'Patricia Elaine Wong', status: 'in-progress', serviceType: 'Celebration of Life', serviceDate: '2026-03-02', location: 'Holladay' },
+  { id: 'MC-2026-0281', name: 'William T. Henderson', status: 'in-progress', serviceType: 'Graveside',           serviceDate: '2026-03-03', location: 'West Jordan' },
+  { id: 'MC-2026-0280', name: 'Dorothy M. Callister', status: 'ready',       serviceType: 'Traditional Burial',  serviceDate: '2026-02-27', location: 'Bountiful' },
+  { id: 'MC-2026-0279', name: 'George F. Nakamura',   status: 'complete',    serviceType: 'Direct Cremation',    serviceDate: null,         location: 'Cottonwood Hts' },
+  { id: 'MC-2026-0278', name: 'Evelyn R. Matsuda',    status: 'in-progress', serviceType: 'Memorial Service',    serviceDate: '2026-03-05', location: 'Sandy' },
+];
+
+// Service type → resource needs for case resource planner
+const serviceTemplates = {
+  'Traditional Burial': [
+    { phase: 'Removal',          resourceType: 'vehicle', subtype: 'van',    label: 'Removal Transport' },
+    { phase: 'Preparation',      resourceType: 'care-center', subtype: null, label: 'Embalming & Dressing' },
+    { phase: 'Visitation',       resourceType: 'venue',   subtype: null,     label: 'Visitation Venue' },
+    { phase: 'Funeral Service',  resourceType: 'venue',   subtype: null,     label: 'Service Venue' },
+    { phase: 'Funeral Service',  resourceType: 'vehicle', subtype: 'hearse', label: 'Service Hearse' },
+    { phase: 'Family Transport', resourceType: 'vehicle', subtype: 'limo',   label: 'Family Limousine' },
+  ],
+  'Cremation': [
+    { phase: 'Removal',          resourceType: 'vehicle', subtype: 'van',    label: 'Removal Transport' },
+    { phase: 'Preparation',      resourceType: 'care-center', subtype: null, label: 'Embalming & Dressing' },
+    { phase: 'Memorial Service', resourceType: 'venue',   subtype: null,     label: 'Service Venue' },
+    { phase: 'Service Transport',resourceType: 'vehicle', subtype: 'hearse', label: 'Service Hearse' },
+  ],
+  'Direct Cremation': [
+    { phase: 'Removal',          resourceType: 'vehicle', subtype: 'van',    label: 'Removal Transport' },
+  ],
+  'Memorial Service': [
+    { phase: 'Memorial Service', resourceType: 'venue',   subtype: null,     label: 'Service Venue' },
+  ],
+  'Graveside': [
+    { phase: 'Graveside Service',resourceType: 'vehicle', subtype: 'hearse', label: 'Service Hearse' },
+    { phase: 'Family Transport', resourceType: 'vehicle', subtype: 'limo',   label: 'Family Limousine' },
+  ],
+  'Celebration of Life': [
+    { phase: 'Celebration',      resourceType: 'venue',   subtype: null,     label: 'Celebration Venue' },
+    { phase: 'Transport',        resourceType: 'vehicle', subtype: 'van',    label: 'Setup Transport' },
+  ],
+};
+
+// Pre-populated bookings matching the static calendar events
+const bookings = [
+  { id: 'b1',  resourceId: 'van-3',        caseId: 'MC-2026-0284', date: '2026-02-24', startTime: '08:00', endTime: '10:00', eventType: 'transport', phase: 'Removal',          label: 'Removal',               status: 'confirmed' },
+  { id: 'b2',  resourceId: 'hearse-1',     caseId: 'MC-2026-0279', date: '2026-02-25', startTime: '09:00', endTime: '11:00', eventType: 'transport', phase: 'Transport',        label: 'Nakamura Transport',    status: 'confirmed' },
+  { id: 'b3',  resourceId: 'hearse-2',     caseId: 'MC-2026-0283', date: '2026-02-26', startTime: '14:00', endTime: '16:00', eventType: 'transport', phase: 'Removal',          label: 'Kimball Removal',       status: 'pending' },
+  { id: 'b4',  resourceId: 'van-3',        caseId: null,           date: '2026-02-26', startTime: '07:00', endTime: '09:00', eventType: 'transport', phase: 'Removal',          label: 'Removal',               status: 'confirmed' },
+  { id: 'b5',  resourceId: 'murray-venue', caseId: 'MC-2026-0283', date: '2026-02-26', startTime: '10:00', endTime: '11:30', eventType: 'meeting',   phase: 'Arrangement',      label: 'Kimball Conf.',         status: 'pending' },
+  { id: 'b6',  resourceId: 'sandy-venue',  caseId: 'MC-2026-0284', date: '2026-02-27', startTime: '14:00', endTime: '16:00', eventType: 'service',   phase: 'Visitation',       label: 'Thornton Visit.',       status: 'confirmed' },
+  { id: 'b7',  resourceId: 'van-3',        caseId: 'MC-2026-0284', date: '2026-02-27', startTime: '08:30', endTime: '10:00', eventType: 'transport', phase: 'Removal',          label: 'Removal — St. Mark\'s', status: 'confirmed' },
+  { id: 'b8',  resourceId: 'sandy-venue',  caseId: 'MC-2026-0284', date: '2026-02-28', startTime: '11:00', endTime: '13:00', eventType: 'service',   phase: 'Funeral Service',  label: 'Thornton Funeral',      status: 'confirmed' },
+  { id: 'b9',  resourceId: 'hearse-1',     caseId: 'MC-2026-0284', date: '2026-02-28', startTime: '10:00', endTime: '14:00', eventType: 'service',   phase: 'Funeral Service',  label: 'Thornton Service',      status: 'confirmed' },
+  { id: 'b10', resourceId: 'limo-1',       caseId: 'MC-2026-0284', date: '2026-02-28', startTime: '10:00', endTime: '15:00', eventType: 'service',   phase: 'Family Transport', label: 'Thornton Family',       status: 'confirmed' },
+  { id: 'b11', resourceId: 'hearse-1',     caseId: 'MC-2026-0282', date: '2026-03-01', startTime: '09:00', endTime: '12:00', eventType: 'transport', phase: 'Transport',        label: 'Wong Service',          status: 'confirmed' },
+  // Intentional conflict demo: Hearse #1 double-booked on Mar 1
+  { id: 'b12', resourceId: 'hearse-1',     caseId: 'MC-2026-0278', date: '2026-03-01', startTime: '10:00', endTime: '13:00', eventType: 'transport', phase: 'Transport',        label: 'Matsuda Transport',     status: 'pending' },
+];
 
 // ==================== ROLE CONFIG ====================
 const roleConfig = {
@@ -2255,6 +2495,14 @@ function navigateTo(pageId) {
     'family': 'Family Portal'
   };
   document.getElementById('pageTitle').textContent = titles[pageId] || 'Dashboard';
+
+  // Scheduling hooks
+  if (pageId === 'schedule') {
+    if (typeof renderCalendarGrid === 'function') { renderCalendarGrid(currentScheduleFilter); populateTimeSelects(); }
+  }
+  if (pageId === 'case-detail') {
+    if (typeof renderCaseResources === 'function') renderCaseResources();
+  }
 }
 
 // ==================== TABS ====================
@@ -2278,6 +2526,891 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     if (e.target === overlay) overlay.classList.remove('active');
   });
 });
+
+// ==================== SCHEDULING UTILITIES ====================
+let currentScheduleFilter = null;
+
+function formatDate(d) {
+  const yr = d.getFullYear();
+  const mo = String(d.getMonth()+1).padStart(2,'0');
+  const da = String(d.getDate()).padStart(2,'0');
+  return `${yr}-${mo}-${da}`;
+}
+
+function getMonday(d) {
+  const dt = new Date(d);
+  const day = dt.getDay();
+  const diff = dt.getDate() - day + (day === 0 ? -6 : 1);
+  dt.setDate(diff);
+  dt.setHours(0,0,0,0);
+  return dt;
+}
+
+function getEventColorClass(eventType) {
+  const map = { transport:'ev-blue', service:'ev-purple', meeting:'ev-orange', prep:'ev-green' };
+  return map[eventType] || 'ev-blue';
+}
+
+function timeToMinutes(t) {
+  const [h,m] = t.split(':').map(Number);
+  return h*60+m;
+}
+
+function formatTimeDisplay(t) {
+  const [h,m] = t.split(':').map(Number);
+  const ampm = h>=12 ? 'PM' : 'AM';
+  const h12 = h%12 || 12;
+  return m === 0 ? `${h12} ${ampm}` : `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function checkConflict(resourceId, date, startTime, endTime, excludeBookingId) {
+  const s = timeToMinutes(startTime), e = timeToMinutes(endTime);
+  return bookings.find(b =>
+    b.resourceId === resourceId &&
+    b.date === date &&
+    b.id !== excludeBookingId &&
+    !(timeToMinutes(b.endTime) <= s || timeToMinutes(b.startTime) >= e)
+  ) || null;
+}
+
+function getBookingsForCell(resourceId, dateStr) {
+  return bookings.filter(b => b.resourceId === resourceId && b.date === dateStr);
+}
+
+function getCaseById(caseId) { return cases.find(c => c.id === caseId); }
+function getResourceById(resId) { return resources.find(r => r.id === resId); }
+
+// ==================== DYNAMIC CALENDAR RENDERER ====================
+function renderCalendarGrid(filterType) {
+  currentScheduleFilter = filterType;
+  const container = document.getElementById('scheduleGridContainer');
+  if (!container) return;
+
+  const monday = getMonday(currentWeekStart);
+  const days = [];
+  const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate()+i);
+    days.push(d);
+  }
+
+  // Update month label
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const labelEl = document.getElementById('calMonthLabel');
+  if (labelEl) {
+    const months = [...new Set(days.map(d => monthNames[d.getMonth()]+' '+d.getFullYear()))];
+    labelEl.textContent = months.join(' / ');
+  }
+
+  // Filter resources
+  let filteredResources = resources.filter(r => r.status !== 'maintenance' || filterType === null);
+  if (filterType) {
+    filteredResources = resources.filter(r => r.type === filterType);
+  }
+
+  // Build grid HTML
+  let html = '';
+
+  // Header row
+  html += '<div class="schedule-header-cell"></div>';
+  const today = '2026-02-27'; // prototype "today"
+  days.forEach((d,i) => {
+    const dateStr = formatDate(d);
+    const isToday = dateStr === today;
+    html += `<div class="schedule-header-cell${isToday ? ' today' : ''}">${dayNames[i]}<div class="day-num">${d.getDate()}</div></div>`;
+  });
+
+  // Resource rows
+  filteredResources.forEach(res => {
+    html += `<div class="schedule-resource"><span class="res-icon">${res.icon}</span> ${res.name}${res.status === 'maintenance' ? ' <span class="badge badge-neutral" style="font-size:9px;padding:1px 5px;margin-left:4px">Maintenance</span>' : ''}</div>`;
+
+    days.forEach(d => {
+      const dateStr = formatDate(d);
+      const cellBookings = getBookingsForCell(res.id, dateStr);
+      let cellHtml = '';
+
+      cellBookings.forEach(b => {
+        // Check for conflicts
+        const hasConflict = bookings.some(other =>
+          other.id !== b.id &&
+          other.resourceId === b.resourceId &&
+          other.date === b.date &&
+          !(timeToMinutes(other.endTime) <= timeToMinutes(b.startTime) || timeToMinutes(other.startTime) >= timeToMinutes(b.endTime))
+        );
+        const conflictClass = hasConflict ? ' conflict' : '';
+        const colorClass = getEventColorClass(b.eventType);
+        cellHtml += `<div class="schedule-event ${colorClass}${conflictClass}" onclick="showBookingPopover('${b.id}', event)" title="${b.label} · ${formatTimeDisplay(b.startTime)}-${formatTimeDisplay(b.endTime)}"><div class="phase-label">${b.phase}</div>${b.label}</div>`;
+      });
+
+      html += `<div class="schedule-cell">${cellHtml}</div>`;
+    });
+  });
+
+  container.innerHTML = html;
+}
+
+// ==================== CALENDAR NAVIGATION ====================
+function shiftWeek(dir) {
+  currentWeekStart.setDate(currentWeekStart.getDate() + dir * 7);
+  renderCalendarGrid(currentScheduleFilter);
+}
+
+function goToday() {
+  currentWeekStart = new Date(2026, 1, 24); // prototype "today" is Feb 27
+  renderCalendarGrid(currentScheduleFilter);
+}
+
+function scheduleTabSwitch(el, filterType) {
+  const group = el.parentElement;
+  group.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderCalendarGrid(filterType);
+}
+
+// ==================== TOAST ====================
+function showToast(message, icon) {
+  let toast = document.getElementById('appToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.id = 'appToast';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<span class="toast-icon">${icon || '✓'}</span> ${message}`;
+  toast.classList.add('visible');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('visible'), 3500);
+}
+
+// ==================== BOOKING POPOVER (User Story 2) ====================
+function showBookingPopover(bookingId, evt) {
+  evt.stopPropagation();
+  const booking = bookings.find(b => b.id === bookingId);
+  if (!booking) return;
+  const res = getResourceById(booking.resourceId);
+  const cs = booking.caseId ? getCaseById(booking.caseId) : null;
+
+  let popover = document.getElementById('bookingPopover');
+  if (!popover) {
+    popover = document.createElement('div');
+    popover.className = 'popover';
+    popover.id = 'bookingPopover';
+    document.body.appendChild(popover);
+  }
+
+  popover.innerHTML = `
+    <div class="popover-header">
+      <h4>${res ? res.icon+' '+res.name : 'Resource'}</h4>
+      <button class="popover-close" onclick="hidePopover()">✕</button>
+    </div>
+    <div class="popover-body" id="popoverBody">
+      <div class="popover-row"><span class="pop-label">Case</span><span class="pop-value">${cs ? cs.name : 'Unassigned'}</span></div>
+      <div class="popover-row"><span class="pop-label">Case #</span><span class="pop-value">${booking.caseId || '—'}</span></div>
+      <div class="popover-row"><span class="pop-label">Phase</span><span class="pop-value">${booking.phase}</span></div>
+      <div class="popover-row"><span class="pop-label">Date</span><span class="pop-value">${booking.date}</span></div>
+      <div class="popover-row"><span class="pop-label">Time</span><span class="pop-value">${formatTimeDisplay(booking.startTime)} — ${formatTimeDisplay(booking.endTime)}</span></div>
+      <div class="popover-row"><span class="pop-label">Status</span><span class="pop-value"><span class="badge badge-${booking.status === 'confirmed' ? 'success' : 'warning'}">${booking.status}</span></span></div>
+    </div>
+    <div class="popover-footer">
+      <button class="header-btn header-btn-outline" onclick="startReassign('${bookingId}')">Reassign to Case</button>
+      <button class="header-btn header-btn-outline" style="color:var(--danger-text);border-color:var(--danger-text)" onclick="cancelBooking('${bookingId}')">Cancel</button>
+    </div>
+  `;
+
+  // Position near clicked element
+  const rect = evt.target.closest('.schedule-event').getBoundingClientRect();
+  const popW = 320, popH = 340;
+  let left = rect.right + 8;
+  let top = rect.top;
+  if (left + popW > window.innerWidth) left = rect.left - popW - 8;
+  if (top + popH > window.innerHeight) top = window.innerHeight - popH - 16;
+  if (top < 8) top = 8;
+  popover.style.left = left + 'px';
+  popover.style.top = top + 'px';
+  popover.classList.add('active');
+}
+
+function hidePopover() {
+  const pop = document.getElementById('bookingPopover');
+  if (pop) pop.classList.remove('active');
+}
+
+function startReassign(bookingId) {
+  const booking = bookings.find(b => b.id === bookingId);
+  if (!booking) return;
+  const cs = booking.caseId ? getCaseById(booking.caseId) : null;
+
+  const body = document.getElementById('popoverBody');
+  const activeCases = cases.filter(c => c.status !== 'complete');
+  let optionsHtml = activeCases.map(c =>
+    `<option value="${c.id}" ${c.id === booking.caseId ? 'selected' : ''}>${c.name} (${c.id})</option>`
+  ).join('');
+
+  body.innerHTML = `
+    <div style="font-size:12px;color:var(--stone-500);margin-bottom:8px">Current case: <span style="text-decoration:line-through;color:var(--navy-700)">${cs ? cs.name : 'Unassigned'}</span></div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label style="font-size:11px;font-weight:600;color:var(--stone-600)">Reassign to:</label>
+      <select id="reassignCaseSelect" style="width:100%;padding:6px 8px;border:1px solid var(--stone-200);border-radius:var(--radius-sm);font-size:12px;font-family:'DM Sans',sans-serif">
+        <option value="">— Unassigned —</option>
+        ${optionsHtml}
+      </select>
+    </div>
+    <div id="reassignWarning"></div>
+  `;
+
+  // Update footer
+  const footer = body.parentElement.querySelector('.popover-footer');
+  footer.innerHTML = `
+    <button class="header-btn header-btn-outline" onclick="showBookingPopover('${bookingId}', event)">Back</button>
+    <button class="header-btn header-btn-fill" onclick="confirmReassign('${bookingId}')">Confirm</button>
+  `;
+
+  // Add change listener for warnings
+  document.getElementById('reassignCaseSelect').addEventListener('change', function() {
+    const newCaseId = this.value;
+    const warnEl = document.getElementById('reassignWarning');
+    if (newCaseId) {
+      const newCase = getCaseById(newCaseId);
+      const template = serviceTemplates[newCase.serviceType] || [];
+      const res = getResourceById(booking.resourceId);
+      const needsType = template.some(t => t.resourceType === res.type);
+      if (!needsType) {
+        warnEl.innerHTML = `<div class="popover-warn">Note: ${newCase.serviceType} cases don't typically need a ${res.type}.</div>`;
+      } else {
+        warnEl.innerHTML = '';
+      }
+    } else {
+      warnEl.innerHTML = '';
+    }
+  });
+}
+
+function confirmReassign(bookingId) {
+  const booking = bookings.find(b => b.id === bookingId);
+  if (!booking) return;
+  const oldCase = booking.caseId ? getCaseById(booking.caseId) : null;
+  const newCaseId = document.getElementById('reassignCaseSelect').value || null;
+  const newCase = newCaseId ? getCaseById(newCaseId) : null;
+
+  booking.caseId = newCaseId;
+  if (newCase) {
+    const oldLabel = booking.label;
+    const lastName = newCase.name.split(' ').pop();
+    booking.label = lastName + ' ' + booking.phase;
+  } else {
+    booking.label = booking.phase;
+  }
+
+  hidePopover();
+  renderCalendarGrid(currentScheduleFilter);
+  renderCaseResources();
+  const fromName = oldCase ? oldCase.name.split(' ').pop() : 'Unassigned';
+  const toName = newCase ? newCase.name.split(' ').pop() : 'Unassigned';
+  const res = getResourceById(booking.resourceId);
+  showToast(`${res.name} reassigned from ${fromName} to ${toName}`, '🔄');
+}
+
+function cancelBooking(bookingId) {
+  const idx = bookings.findIndex(b => b.id === bookingId);
+  if (idx === -1) return;
+  const booking = bookings[idx];
+  const res = getResourceById(booking.resourceId);
+  bookings.splice(idx, 1);
+  hidePopover();
+  renderCalendarGrid(currentScheduleFilter);
+  renderCaseResources();
+  showToast(`${res.name} booking cancelled`, '🗑');
+}
+
+// Close popover on outside click
+document.addEventListener('click', (e) => {
+  const pop = document.getElementById('bookingPopover');
+  if (pop && pop.classList.contains('active') && !pop.contains(e.target) && !e.target.closest('.schedule-event')) {
+    hidePopover();
+  }
+});
+
+// ==================== AVAILABILITY FILTER (User Story 3) ====================
+function populateTimeSelects() {
+  const startSel = document.getElementById('availStartTime');
+  const endSel = document.getElementById('availEndTime');
+  if (!startSel || !endSel) return;
+  let html = '';
+  for (let h = 6; h <= 20; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const val = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+      const label = formatTimeDisplay(val);
+      html += `<option value="${val}">${label}</option>`;
+    }
+  }
+  startSel.innerHTML = html;
+  endSel.innerHTML = html;
+  startSel.value = '10:00';
+  endSel.value = '14:00';
+}
+
+function checkAvailability() {
+  const date = document.getElementById('availDate').value;
+  const startTime = document.getElementById('availStartTime').value;
+  const endTime = document.getElementById('availEndTime').value;
+  const typeFilter = document.getElementById('availType').value;
+
+  if (!date || !startTime || !endTime) return;
+
+  const results = { available: [], booked: [], maintenance: [] };
+  const filteredRes = typeFilter ? resources.filter(r => r.type === typeFilter) : resources;
+
+  filteredRes.forEach(res => {
+    if (res.status === 'maintenance') {
+      results.maintenance.push({ resource: res, conflict: null });
+      return;
+    }
+    const conflict = checkConflict(res.id, date, startTime, endTime);
+    if (conflict) {
+      results.booked.push({ resource: res, conflict });
+    } else {
+      results.available.push({ resource: res, conflict: null });
+    }
+  });
+
+  renderAvailabilityResults(results, date, startTime, endTime);
+}
+
+function renderAvailabilityResults(results, date, startTime, endTime) {
+  const container = document.getElementById('availabilityResults');
+  container.style.display = 'block';
+
+  const dateDisplay = new Date(date+'T12:00:00').toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+
+  let html = `<div class="availability-results">`;
+  html += `<div class="avail-results-header"><span>Available for ${dateDisplay}, ${formatTimeDisplay(startTime)} — ${formatTimeDisplay(endTime)}</span><span style="font-size:11px;color:var(--stone-500)">${results.available.length} available · ${results.booked.length} booked</span></div>`;
+
+  // Group by type
+  const types = [
+    { key:'vehicle', label:'VEHICLES' },
+    { key:'venue', label:'VENUES' },
+    { key:'care-center', label:'CARE CENTER' },
+  ];
+
+  types.forEach(type => {
+    const avail = results.available.filter(r => r.resource.type === type.key);
+    const booked = results.booked.filter(r => r.resource.type === type.key);
+    const maint = results.maintenance.filter(r => r.resource.type === type.key);
+    if (avail.length + booked.length + maint.length === 0) return;
+
+    html += `<div class="avail-group-title">${type.label}</div>`;
+
+    avail.forEach(item => {
+      html += `<div class="avail-item">
+        <span class="avail-icon">${item.resource.icon}</span>
+        <span class="avail-name">${item.resource.name}</span>
+        <span class="avail-location">${item.resource.location}</span>
+        <span class="avail-status"><span class="badge badge-success" style="font-size:10px">Available</span></span>
+        <button class="header-btn header-btn-fill" style="font-size:10px;padding:4px 10px;margin-left:8px" onclick="openResourcePlanner(null,'${item.resource.id}','${date}','${startTime}','${endTime}')">Reserve</button>
+      </div>`;
+    });
+
+    booked.forEach(item => {
+      const conf = item.conflict;
+      const confCase = conf.caseId ? getCaseById(conf.caseId) : null;
+      html += `<div class="avail-item" style="opacity:.7">
+        <span class="avail-icon">${item.resource.icon}</span>
+        <span class="avail-name">${item.resource.name}</span>
+        <span class="avail-conflict">${confCase ? confCase.name.split(' ').pop() : ''} ${conf.label} ${formatTimeDisplay(conf.startTime)}-${formatTimeDisplay(conf.endTime)}</span>
+        <span class="avail-status"><span class="badge badge-danger" style="font-size:10px">Booked</span></span>
+      </div>`;
+    });
+
+    maint.forEach(item => {
+      html += `<div class="avail-item" style="opacity:.5">
+        <span class="avail-icon">${item.resource.icon}</span>
+        <span class="avail-name">${item.resource.name}</span>
+        <span class="avail-location">${item.resource.location}</span>
+        <span class="avail-status"><span class="badge badge-neutral" style="font-size:10px">Maintenance</span></span>
+      </div>`;
+    });
+  });
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function clearAvailability() {
+  const container = document.getElementById('availabilityResults');
+  if (container) { container.style.display = 'none'; container.innerHTML = ''; }
+}
+
+// ==================== RESOURCE PLANNER MODAL (User Story 1) ====================
+let plannerSelectedCase = null;
+let plannerMode = 'planner'; // 'planner' or 'quick'
+
+function openResourcePlanner(caseId, preResourceId, preDate, preStart, preEnd) {
+  plannerSelectedCase = caseId || null;
+  const modal = document.getElementById('resourcePlannerModal');
+  if (!modal) return;
+
+  modal.classList.add('active');
+
+  if (preResourceId) {
+    // Quick reserve mode with pre-filled resource
+    plannerMode = 'quick';
+    renderQuickReserve(preResourceId, preDate, preStart, preEnd);
+  } else if (caseId) {
+    // Case planner mode
+    plannerMode = 'planner';
+    renderCasePlanner(caseId);
+  } else {
+    // Default: show case selector
+    plannerMode = 'planner';
+    renderCasePlanner(null);
+  }
+
+  updatePlannerToggle();
+}
+
+function updatePlannerToggle() {
+  const plannerBtn = document.getElementById('plannerTogglePlanner');
+  const quickBtn = document.getElementById('plannerToggleQuick');
+  const plannerView = document.getElementById('casePlannerView');
+  const quickView = document.getElementById('quickReserveView');
+  if (!plannerBtn) return;
+
+  if (plannerMode === 'planner') {
+    plannerBtn.classList.add('active'); quickBtn.classList.remove('active');
+    plannerView.classList.add('active'); quickView.classList.remove('active');
+  } else {
+    quickBtn.classList.add('active'); plannerBtn.classList.remove('active');
+    quickView.classList.add('active'); plannerView.classList.remove('active');
+  }
+}
+
+function switchPlannerMode(mode) {
+  plannerMode = mode;
+  updatePlannerToggle();
+  if (mode === 'planner') renderCasePlanner(plannerSelectedCase);
+  else renderQuickReserve();
+}
+
+function renderCasePlanner(caseId) {
+  const container = document.getElementById('casePlannerView');
+  if (!container) return;
+
+  const activeCases = cases.filter(c => c.status !== 'complete');
+  let html = '';
+
+  // Case selector
+  html += `<div class="form-group" style="margin-bottom:16px">
+    <label style="font-size:11px;font-weight:600;color:var(--stone-600)">Select Case</label>
+    <select id="plannerCaseSelect" onchange="onPlannerCaseChange()" style="width:100%;padding:8px 10px;border:1px solid var(--stone-200);border-radius:var(--radius-sm);font-size:13px;font-family:'DM Sans',sans-serif">
+      <option value="">— Select a case —</option>
+      ${activeCases.map(c => `<option value="${c.id}" ${c.id === caseId ? 'selected' : ''}>${c.name} · ${c.id} · ${c.serviceType}</option>`).join('')}
+    </select>
+  </div>`;
+
+  html += '<div id="plannerCaseContent"></div>';
+  container.innerHTML = html;
+
+  if (caseId) onPlannerCaseChange();
+}
+
+function onPlannerCaseChange() {
+  const sel = document.getElementById('plannerCaseSelect');
+  const caseId = sel ? sel.value : null;
+  plannerSelectedCase = caseId;
+  const contentEl = document.getElementById('plannerCaseContent');
+  if (!caseId || !contentEl) { if(contentEl) contentEl.innerHTML = ''; return; }
+
+  const cs = getCaseById(caseId);
+  if (!cs) return;
+
+  const template = serviceTemplates[cs.serviceType] || [];
+  const caseBookings = bookings.filter(b => b.caseId === caseId);
+
+  // Case header
+  let html = `<div class="planner-case-header">
+    <span class="case-badge">${cs.id}</span>
+    <div>
+      <h3>${cs.name}</h3>
+      <div class="case-meta">${cs.serviceType} · ${cs.location} · ${cs.serviceDate ? cs.serviceDate : 'Date TBD'}</div>
+    </div>
+  </div>`;
+
+  // Progress
+  const bookedCount = template.filter((t, i) => {
+    return caseBookings.some(b => b.phase === t.phase && getResourceById(b.resourceId)?.type === t.resourceType);
+  }).length;
+  const pct = template.length > 0 ? Math.round(bookedCount / template.length * 100) : 0;
+
+  html += `<div class="planner-progress">
+    <span>${bookedCount} of ${template.length} resources booked</span>
+    <div class="planner-progress-bar"><div class="planner-progress-fill" style="width:${pct}%"></div></div>
+    <span>${pct}%</span>
+  </div>`;
+
+  // Service date for default dates
+  const svcDate = cs.serviceDate ? new Date(cs.serviceDate + 'T12:00:00') : new Date('2026-03-01T12:00:00');
+
+  // Resource needs table
+  html += `<table class="planner-table">
+    <thead><tr><th>Phase</th><th>Resource Type</th><th>Date</th><th>Start</th><th>End</th><th>Resource</th><th>Status</th></tr></thead>
+    <tbody>`;
+
+  template.forEach((need, idx) => {
+    // Find existing booking for this need
+    const existing = caseBookings.find(b => b.phase === need.phase && getResourceById(b.resourceId)?.type === need.resourceType);
+
+    // Default dates based on phase
+    let defaultDate = cs.serviceDate || '2026-03-01';
+    let defaultStart = '10:00', defaultEnd = '14:00';
+    if (need.phase === 'Removal') {
+      const d = new Date(svcDate); d.setDate(d.getDate()-3);
+      defaultDate = formatDate(d); defaultStart = '08:00'; defaultEnd = '10:00';
+    } else if (need.phase === 'Preparation') {
+      const d = new Date(svcDate); d.setDate(d.getDate()-2);
+      defaultDate = formatDate(d); defaultStart = '09:00'; defaultEnd = '17:00';
+    } else if (need.phase === 'Visitation') {
+      const d = new Date(svcDate); d.setDate(d.getDate()-1);
+      defaultDate = formatDate(d); defaultStart = '14:00'; defaultEnd = '16:00';
+    } else if (need.phase.includes('Service') || need.phase === 'Celebration') {
+      defaultStart = '11:00'; defaultEnd = '13:00';
+    } else if (need.phase === 'Family Transport') {
+      defaultStart = '10:00'; defaultEnd = '15:00';
+    }
+
+    const date = existing ? existing.date : defaultDate;
+    const start = existing ? existing.startTime : defaultStart;
+    const end = existing ? existing.endTime : defaultEnd;
+
+    // Build resource options
+    const matchingResources = resources.filter(r => {
+      if (r.type !== need.resourceType) return false;
+      if (need.subtype && r.subtype !== need.subtype) return false;
+      return true;
+    });
+
+    let optionsHtml = '<option value="">— Select —</option>';
+    matchingResources.forEach(r => {
+      const conflict = checkConflict(r.id, date, start, end, existing ? existing.id : null);
+      const disabled = (r.status === 'maintenance' || conflict) ? 'class="unavailable" disabled' : '';
+      const suffix = r.status === 'maintenance' ? ' (Maintenance)' : conflict ? ` (Booked: ${conflict.label})` : ` (${r.location})`;
+      const selected = existing && existing.resourceId === r.id ? 'selected' : '';
+      optionsHtml += `<option value="${r.id}" ${disabled} ${selected}>${r.name}${suffix}</option>`;
+    });
+
+    const statusHtml = existing
+      ? '<span class="planner-status-booked">✓ Booked</span>'
+      : '<span class="planner-status-needed">○ Needs Booking</span>';
+
+    html += `<tr data-row-idx="${idx}">
+      <td><strong>${need.phase}</strong><br><span style="font-size:10px;color:var(--stone-400)">${need.label}</span></td>
+      <td>${need.resourceType === 'vehicle' ? (need.subtype || 'Vehicle') : need.resourceType === 'venue' ? 'Venue' : 'Prep Room'}</td>
+      <td><input type="date" value="${date}" data-field="date" data-idx="${idx}" onchange="onPlannerFieldChange(${idx})"></td>
+      <td><select data-field="start" data-idx="${idx}" onchange="onPlannerFieldChange(${idx})">${buildTimeOptions(start)}</select></td>
+      <td><select data-field="end" data-idx="${idx}" onchange="onPlannerFieldChange(${idx})">${buildTimeOptions(end)}</select></td>
+      <td><select data-field="resource" data-idx="${idx}">${optionsHtml}</select></td>
+      <td>${statusHtml}</td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+
+  html += `<div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end">
+    <button class="header-btn header-btn-fill" onclick="confirmPlannerBookings()">Confirm & Book All</button>
+  </div>`;
+
+  contentEl.innerHTML = html;
+}
+
+function buildTimeOptions(selectedVal) {
+  let html = '';
+  for (let h = 6; h <= 20; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const val = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+      html += `<option value="${val}" ${val === selectedVal ? 'selected' : ''}>${formatTimeDisplay(val)}</option>`;
+    }
+  }
+  return html;
+}
+
+function onPlannerFieldChange(idx) {
+  // When date/time changes, refresh available resources for that row
+  if (!plannerSelectedCase) return;
+  const cs = getCaseById(plannerSelectedCase);
+  const template = serviceTemplates[cs.serviceType] || [];
+  const need = template[idx];
+  if (!need) return;
+
+  const row = document.querySelector(`tr[data-row-idx="${idx}"]`);
+  if (!row) return;
+  const dateInput = row.querySelector('[data-field="date"]');
+  const startSel = row.querySelector('[data-field="start"]');
+  const endSel = row.querySelector('[data-field="end"]');
+  const resSel = row.querySelector('[data-field="resource"]');
+
+  const date = dateInput.value;
+  const start = startSel.value;
+  const end = endSel.value;
+  const currentResId = resSel.value;
+
+  const caseBookings = bookings.filter(b => b.caseId === plannerSelectedCase);
+  const existing = caseBookings.find(b => b.phase === need.phase && getResourceById(b.resourceId)?.type === need.resourceType);
+
+  const matchingResources = resources.filter(r => {
+    if (r.type !== need.resourceType) return false;
+    if (need.subtype && r.subtype !== need.subtype) return false;
+    return true;
+  });
+
+  let optionsHtml = '<option value="">— Select —</option>';
+  matchingResources.forEach(r => {
+    const conflict = checkConflict(r.id, date, start, end, existing ? existing.id : null);
+    const disabled = (r.status === 'maintenance' || conflict) ? 'class="unavailable" disabled' : '';
+    const suffix = r.status === 'maintenance' ? ' (Maintenance)' : conflict ? ` (Booked: ${conflict.label})` : ` (${r.location})`;
+    const selected = r.id === currentResId ? 'selected' : '';
+    optionsHtml += `<option value="${r.id}" ${disabled} ${selected}>${r.name}${suffix}</option>`;
+  });
+
+  resSel.innerHTML = optionsHtml;
+}
+
+function confirmPlannerBookings() {
+  if (!plannerSelectedCase) return;
+  const cs = getCaseById(plannerSelectedCase);
+  const template = serviceTemplates[cs.serviceType] || [];
+  const caseBookings = bookings.filter(b => b.caseId === plannerSelectedCase);
+  let newCount = 0;
+
+  template.forEach((need, idx) => {
+    const row = document.querySelector(`tr[data-row-idx="${idx}"]`);
+    if (!row) return;
+
+    const date = row.querySelector('[data-field="date"]').value;
+    const start = row.querySelector('[data-field="start"]').value;
+    const end = row.querySelector('[data-field="end"]').value;
+    const resId = row.querySelector('[data-field="resource"]').value;
+
+    if (!resId) return; // skip unselected
+
+    // Check if already booked
+    const existing = caseBookings.find(b => b.phase === need.phase && getResourceById(b.resourceId)?.type === need.resourceType);
+    if (existing) {
+      // Update existing booking
+      existing.date = date;
+      existing.startTime = start;
+      existing.endTime = end;
+      if (existing.resourceId !== resId) {
+        existing.resourceId = resId;
+      }
+      return;
+    }
+
+    // Check conflict before booking
+    const conflict = checkConflict(resId, date, start, end);
+    if (conflict) return; // skip conflicted
+
+    // Create new booking
+    const lastName = cs.name.split(' ').pop();
+    bookings.push({
+      id: 'b' + (nextBookingId++),
+      resourceId: resId,
+      caseId: cs.id,
+      date: date,
+      startTime: start,
+      endTime: end,
+      eventType: need.resourceType === 'venue' ? 'service' : need.resourceType === 'care-center' ? 'prep' : 'transport',
+      phase: need.phase,
+      label: lastName + ' ' + need.phase,
+      status: 'confirmed'
+    });
+    newCount++;
+  });
+
+  closeModal('resourcePlannerModal');
+  renderCalendarGrid(currentScheduleFilter);
+  renderCaseResources();
+  if (newCount > 0) {
+    showToast(`${newCount} resource${newCount > 1 ? 's' : ''} booked for ${cs.name.split(' ').pop()}`, '📅');
+  } else {
+    showToast('Resource assignments updated', '✓');
+  }
+}
+
+// Quick Reserve (single resource booking)
+function renderQuickReserve(preResourceId, preDate, preStart, preEnd) {
+  const container = document.getElementById('quickReserveView');
+  if (!container) return;
+
+  const activeCases = cases.filter(c => c.status !== 'complete');
+  let typeOptions = `<option value="">All Types</option><option value="vehicle">Vehicle</option><option value="venue">Venue</option><option value="care-center">Care Center</option>`;
+
+  let html = `
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Resource Type</label>
+        <select id="qrType" onchange="updateQuickResourceOptions()">${typeOptions}</select>
+      </div>
+      <div class="form-group">
+        <label>Resource</label>
+        <select id="qrResource"></select>
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="qrDate" value="${preDate || '2026-02-28'}">
+      </div>
+      <div class="form-group">
+        <label>Start Time</label>
+        <select id="qrStart">${buildTimeOptions(preStart || '10:00')}</select>
+      </div>
+      <div class="form-group">
+        <label>End Time</label>
+        <select id="qrEnd">${buildTimeOptions(preEnd || '14:00')}</select>
+      </div>
+      <div class="form-group">
+        <label>Case</label>
+        <select id="qrCase">
+          <option value="">— Unassigned —</option>
+          ${activeCases.map(c => `<option value="${c.id}">${c.name} (${c.id})</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Phase</label>
+        <select id="qrPhase">
+          <option>Removal</option><option>Preparation</option><option>Visitation</option>
+          <option>Funeral Service</option><option>Family Transport</option><option>Transport</option>
+          <option>Memorial Service</option><option>Celebration</option><option>Graveside Service</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Label</label>
+        <input type="text" id="qrLabel" placeholder="Event label" value="">
+      </div>
+    </div>
+    <div style="margin-top:16px;display:flex;justify-content:flex-end">
+      <button class="header-btn header-btn-fill" onclick="confirmQuickReserve()">Confirm Reservation</button>
+    </div>
+  `;
+
+  container.innerHTML = html;
+  updateQuickResourceOptions();
+
+  // Pre-select resource if provided
+  if (preResourceId) {
+    const res = getResourceById(preResourceId);
+    if (res) {
+      document.getElementById('qrType').value = res.type;
+      updateQuickResourceOptions();
+      document.getElementById('qrResource').value = preResourceId;
+    }
+  }
+}
+
+function updateQuickResourceOptions() {
+  const type = document.getElementById('qrType').value;
+  const sel = document.getElementById('qrResource');
+  const filtered = type ? resources.filter(r => r.type === type) : resources;
+  sel.innerHTML = '<option value="">— Select —</option>' + filtered.map(r =>
+    `<option value="${r.id}" ${r.status === 'maintenance' ? 'disabled' : ''}>${r.icon} ${r.name}${r.status === 'maintenance' ? ' (Maintenance)' : ' ('+r.location+')'}</option>`
+  ).join('');
+}
+
+function confirmQuickReserve() {
+  const resId = document.getElementById('qrResource').value;
+  const date = document.getElementById('qrDate').value;
+  const start = document.getElementById('qrStart').value;
+  const end = document.getElementById('qrEnd').value;
+  const caseId = document.getElementById('qrCase').value || null;
+  const phase = document.getElementById('qrPhase').value;
+  const label = document.getElementById('qrLabel').value || phase;
+
+  if (!resId || !date || !start || !end) {
+    showToast('Please fill in all required fields', '⚠');
+    return;
+  }
+
+  const conflict = checkConflict(resId, date, start, end);
+  if (conflict) {
+    const confCase = conflict.caseId ? getCaseById(conflict.caseId) : null;
+    showToast(`Conflict: ${conflict.label} (${formatTimeDisplay(conflict.startTime)}-${formatTimeDisplay(conflict.endTime)})`, '⚠');
+    return;
+  }
+
+  const res = getResourceById(resId);
+  bookings.push({
+    id: 'b' + (nextBookingId++),
+    resourceId: resId,
+    caseId: caseId,
+    date: date,
+    startTime: start,
+    endTime: end,
+    eventType: res.type === 'venue' ? 'service' : res.type === 'care-center' ? 'prep' : 'transport',
+    phase: phase,
+    label: label,
+    status: 'confirmed'
+  });
+
+  closeModal('resourcePlannerModal');
+  renderCalendarGrid(currentScheduleFilter);
+  renderCaseResources();
+  showToast(`${res.name} reserved for ${date}`, '📅');
+}
+
+// ==================== CASE DETAIL RESOURCES ====================
+function renderCaseResources() {
+  const container = document.getElementById('caseScheduledResources');
+  if (!container) return;
+
+  const caseId = 'MC-2026-0284'; // Thornton (the case detail page always shows this)
+  const cs = getCaseById(caseId);
+  if (!cs) return;
+
+  const template = serviceTemplates[cs.serviceType] || [];
+  const caseBookings = bookings.filter(b => b.caseId === caseId);
+
+  let bookedCount = 0;
+  let html = '';
+
+  template.forEach(need => {
+    const booking = caseBookings.find(b => b.phase === need.phase && getResourceById(b.resourceId)?.type === need.resourceType);
+    if (booking) {
+      bookedCount++;
+      const res = getResourceById(booking.resourceId);
+      html += `<div class="sched-resource-item">
+        <span class="sri-check" style="color:var(--success-text)">✓</span>
+        <span class="sri-phase">${need.phase}</span>
+        <span class="sri-resource">${res.icon} ${res.name}</span>
+        <span class="sri-datetime">${booking.date}, ${formatTimeDisplay(booking.startTime)}-${formatTimeDisplay(booking.endTime)}</span>
+        <button class="sri-action" onclick="showBookingPopover('${booking.id}', event)">Edit</button>
+      </div>`;
+    } else {
+      html += `<div class="sched-resource-item unbooked">
+        <span class="sri-check" style="color:var(--stone-300)">○</span>
+        <span class="sri-phase">${need.phase}</span>
+        <span class="sri-resource">Not yet scheduled</span>
+        <span class="sri-datetime"></span>
+        <button class="sri-action" style="color:var(--warning-text)" onclick="openResourcePlanner('${caseId}')">Book</button>
+      </div>`;
+    }
+  });
+
+  const pct = template.length > 0 ? Math.round(bookedCount / template.length * 100) : 0;
+  container.innerHTML = `
+    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
+      <h3>Scheduled Resources</h3>
+      <span class="text-xs text-muted">${bookedCount} of ${template.length} booked</span>
+    </div>
+    <div class="card-body">
+      <div class="planner-progress" style="margin-bottom:12px">
+        <div class="planner-progress-bar"><div class="planner-progress-fill" style="width:${pct}%"></div></div>
+        <span style="font-size:11px">${pct}%</span>
+      </div>
+      ${html}
+      <div style="margin-top:12px;text-align:center">
+        <button class="header-btn header-btn-outline" style="font-size:11px" onclick="openResourcePlanner('${caseId}')">Schedule All Resources</button>
+      </div>
+    </div>`;
+}
+
 </script>
 
 </body>
